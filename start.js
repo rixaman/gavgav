@@ -8,6 +8,10 @@ tile.setImageByName = function(name){
 tile.setImageByIndex = function(index){
 	if(index == 1)this.positionInImage = {x:16,y:0};	
 	if(index == 2)this.positionInImage = {x:16,y:1};
+	if(index == 3)this.positionInImage = {x:16,y:2};
+	if(index == 4)this.positionInImage = {x:17,y:2};
+	if(index == 5)this.positionInImage = {x:18,y:2};
+	if(index == 6)this.positionInImage = {x:16,y:3};
 }
 tile.positionInImage = {x:16,y:0};
 tile.position = null;
@@ -22,7 +26,10 @@ tile.draw = function(contex){
 						this.size, 
 						this.size);	
 }
-
+function getRandomInt(min, max)
+{
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 LoadPage = function () {
 	var Пример = document.getElementById('canvas'), // Задаём контекст
 	Контекст       = Пример.getContext('2d'),           // Контекст холста
@@ -43,14 +50,14 @@ LoadPage = function () {
 	Пример.width  = 45 * РазмерТайла;
 	Пример.height = 45 * РазмерТайла;
 	Картинка.src = 'images/TankSets.png';
-	index = 1;
 	Картинка.onload = function() {  // Событие onLoad, ждём момента пока загрузится изображение
 		for (var j = 0 ; j < 45; j ++){
 			for (var i = 0 ; i < 45; i ++){
 				t = tile;
 				t.img = Картинка;
-				if(index == 1) index = 2;
-				else index = 1;
+
+				index = getRandomInt(1, 6);
+				
 				t.setImageByIndex(index);
 				t.position = {x:j,y:i};
 				t.draw(Контекст);
