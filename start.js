@@ -1,7 +1,32 @@
+
+tile = {};
+tile.size = 16;
+tile.img = null;
+tile.setImageByName = function(name){
+
+}
+tile.setImageByIndex = function(index){
+	if(index == 1)this.positionInImage = {x:16,y:0};	
+	if(index == 2)this.positionInImage = {x:16,y:1};
+}
+tile.positionInImage = {x:16,y:0};
+tile.position = null;
+tile.draw = function(contex){
+	contex.drawImage(	this.img, 
+						this.positionInImage.x * this.size, 
+						this.positionInImage.y * this.size, 
+						this.size, 
+						this.size,
+						this.position.x * this.size, 
+						this.position.y * this.size, 
+						this.size, 
+						this.size);	
+}
+
 LoadPage = function () {
 	var Пример = document.getElementById('canvas'), // Задаём контекст
 	Контекст       = Пример.getContext('2d'),           // Контекст холста
-	РазмерТайла  = 32,                                 // Размер одной ячейки на карте
+	РазмерТайла  = 16,                                 // Размер одной ячейки на карте
 	Картинка       = new Image(),                        // "Создаём" изображение
 	Карта       =                                     // Карта уровня двумерным массивом
 	[
@@ -15,14 +40,21 @@ LoadPage = function () {
 		[{x:1,y:4},{x:1,y:4},{x:1,y:4},{x:1,y:4},{x:1,y:4},{x:1,y:4},{x:1,y:4},{x:1,y:4}]  // 8ый ряд
 	]; // Первая и вторая координата (x и y соответственно) задают фрагмент в исходном изображении
 	// Размер холста равный 8х8 клеток
-	Пример.width  = 8 * РазмерТайла;
-	Пример.height = 8 * РазмерТайла;
+	Пример.width  = 45 * РазмерТайла;
+	Пример.height = 45 * РазмерТайла;
 	Картинка.src = 'images/TankSets.png';
+	index = 1;
 	Картинка.onload = function() {  // Событие onLoad, ждём момента пока загрузится изображение
-	for (var j = 0 ; j < 8; j ++)
-		for (var i = 0; i < 8; i ++)
-		// перебираем все значения массива 'карта' и в зависимости от координат вырисовываем нужный нам фрагмент
-		Контекст.drawImage(Картинка, (Карта[i][j].x-1)*РазмерТайла, (Карта[i][j].y-1)*РазмерТайла, 32, 32, j*РазмерТайла, i*РазмерТайла, 32, 32);
-		console.log(Карта[i-1][j-1]);
-	}		
+		for (var j = 0 ; j < 45; j ++){
+			for (var i = 0 ; i < 45; i ++){
+				t = tile;
+				t.img = Картинка;
+				if(index == 1) index = 2;
+				else index = 1;
+				t.setImageByIndex(index);
+				t.position = {x:j,y:i};
+				t.draw(Контекст);
+			}
+		}
+	}
 };
