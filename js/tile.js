@@ -25,13 +25,15 @@ tile.renderEntity = function(contex) {
 }
 
 tile.draw = function(contex){
-	contex.drawImage(	this.img, 
-						this.positionInImage.x * this.size, 
-						this.positionInImage.y * this.size, 
-						this.size, 
-						this.size,
-						this.position.x * this.size, 
-						this.position.y * this.size, 
-						this.size, 
-						this.size);	
+	contex.drawImage(
+		this.img, 
+		this.positionInImage.x * this.size, 
+		this.positionInImage.y * this.size, 
+		this.size, 
+		this.size,
+		this.position.x * this.size, 
+		this.position.y * this.size, 
+		this.size, 
+		this.size
+	);	
 }

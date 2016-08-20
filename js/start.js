@@ -5,7 +5,7 @@ function getRandomInt(min, max)
 
 function init(){
 	var canv = document.getElementById('canvas'); // Задаём контекст
-	context       = canv.getContext('2d');           // Контекст холста
+	context = canv.getContext('2d');           // Контекст холста
 	canv.width  = 45 * 16;
 	canv.height = 45 * 16;
 	
