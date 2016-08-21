@@ -12,7 +12,7 @@ Vector2.y = 0;
 /*
 что то типа конструктора, функция возвращает вектор c с переданными координатами
  */
-Vector2.Create - function(_x, _y){
+Vector2.Create = function(_x, _y){
     newV = Vector2;
     newV.init(_x, _y);
     return newV;
@@ -97,4 +97,11 @@ Vector2.dot = function(v){
 */
 Vector2.angle = function(v){
     return Math.acos(this.dot(v)/(this.magnitude() * v.magnitude()));
+}
+
+Vector2.draw = function(contex){
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.lineTo(this.x, this.y);
+        context.stroke();
 }
