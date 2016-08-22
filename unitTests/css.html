@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>Engine</title>
+        <style>
+            .tank {
+                width: 100px;
+                height: 100px;
+                border: 1px solid red;
+                top: 100px;
+                left: 100px;
+                position: absolute;
+            }
+        </style>
+        <script>
+
+            function getRandomInt(min, max)
+            {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            function checkKey(e) {
+                var event = window.event ? window.event : e;
+
+                var el = document.getElementById('tank');
+                var top = getComputedStyle(el).top, left=getComputedStyle(el).left; //тут будут, например 100px
+                top = parseInt(top); // теперь будет 100 без 'px'
+                left = parseInt(left);
+               
+                switch (event.keyCode) {
+                    case 37:
+                        el.style.left = (left - 5)+'px';
+                        break;
+                    case 38:
+                        el.style.top = (top - 5)+'px';
+                        break;
+                    case 39:
+                        el.style.left = (left + 5)+'px';
+                        break;
+                    case 40:
+                        el.style.top = (top + 5)+'px';
+                        break;
+                }
+                console.log(event.keyCode)
+            }
+
+        var countTank = 300;
+        function AddEmnemys(){
+            for(var i = 0; i < countTank; i++){
+                var newDiv = document.createElement('div')
+                newDiv.class = 'tank'
+                newDiv.id = 'tank_' + i;
+                var el = document.getElementById('enemys');
+
+                var top = getComputedStyle(el).top, left=getComputedStyle(el).left; //тут будут, например 100px
+                top = parseInt(top); // теперь будет 100 без 'px'
+                left = parseInt(left);
+               
+                top = getRandomInt(0,500) + 'px';
+                left = getRandomInt(0,500) + 'px';
+
+                newDiv.style.border = '1px solid red';
+                newDiv.style.position= 'absolute';
+            
+                newDiv.style.width = '100px';
+                newDiv.style.height = '100px';
+                newDiv.style.top = top;
+                newDiv.style.left = left;
+                el.appendChild(newDiv);
+            }    
+        }
+        function OnFrame(){
+            for(var i = 0;i<countTank;i++){
+
+                var el = document.getElementById('tank_' + i);
+                var top = getComputedStyle(el).top, left=getComputedStyle(el).left; //тут будут, например 100px
+                top = parseInt(top); // теперь будет 100 без 'px'
+                left = parseInt(left);
+               
+                kk = getRandomInt(37, 40);
+                switch (kk) {
+                    case 37:
+                        el.style.left = (left - 5)+'px';
+                        break;
+                    case 38:
+                        el.style.top = (top - 5)+'px';
+                        break;
+                    case 39:
+                        el.style.left = (left + 5)+'px';
+                        break;
+                    case 40:
+                        el.style.top = (top + 5)+'px';
+                        break;
+                }
+            }
+            setTimeout(OnFrame, 10);
+        }
+
+        function ready() {
+            document.onkeydown = checkKey;
+            setTimeout(AddEmnemys, 100);
+
+            setTimeout(OnFrame, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", ready);      
+    </script>
+    </head>
+    <body onkeydown="checkKey()">
+        <div id = "enemys">
+            <div class = "tank" id="tank"></div>
+        </div>
+    </body>
+</html>
