@@ -3,8 +3,8 @@
         <title>Engine</title>
         <style>
             .tank {
-                width: 100px;
-                height: 100px;
+                width: 10px;
+                height: 10px;
                 border: 1px solid red;
                 top: 100px;
                 left: 100px;
@@ -42,7 +42,7 @@
                 console.log(event.keyCode)
             }
 
-        var countTank = 300;
+        var countTank = 1000;
         function AddEmnemys(){
             for(var i = 0; i < countTank; i++){
                 var newDiv = document.createElement('div')
@@ -60,8 +60,8 @@
                 newDiv.style.border = '1px solid red';
                 newDiv.style.position= 'absolute';
             
-                newDiv.style.width = '100px';
-                newDiv.style.height = '100px';
+                newDiv.style.width = '10px';
+                newDiv.style.height = '10px';
                 newDiv.style.top = top;
                 newDiv.style.left = left;
                 el.appendChild(newDiv);

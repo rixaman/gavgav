@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title>Engine</title>
+        <script>
+            var countTank = 50000;
+            function getRandomInt(min, max)
+            {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            tanks = {}
+            LoadPage = function () {
+                var canv = document.getElementById('canvas'); // Задаём контекст
+                context = canv.getContext('2d');           // Контекст холста
+                canv.width  = 45 * 16;
+                canv.height = 45 * 16;
+                
+                for (var i = 0 ; i < countTank; i ++){
+                    tanks['el_' + i] = {};
+                    tanks['el_' + i].x = getRandomInt(0, 500);
+                    tanks['el_' + i].y = getRandomInt(0, 500);
+
+                    tanks['el_' + i].w = 10;
+                    tanks['el_' + i].h = 10;
+                }
+                draw(context);
+            };
+            function draw(){
+                for (var i = 0 ; i < countTank; i ++){
+
+                    var t = tanks['el_' + i];
+
+                    context.moveTo(t.x, t.y);
+                    context.lineTo(t.x + 10, t.y);
+                    context.lineTo(t.x + 10, t.y + 10);
+                    context.lineTo(t.x, t.y + 10);
+                    context.lineTo(t.x, t.y);
+                }
+            }
+
+           
+        function OnFrame(){
+            for(var i = 0;i<countTank;i++){
+                var t = tanks['el_' + i];
+                kk = getRandomInt(37, 40);
+                switch (kk) {
+                    case 37:
+                       t.x -= 5;
+                        break;
+                    case 38:
+                        t.y -= 5;
+                        break;
+                    case 39:
+                        t.x += 5;
+                        break;
+                    case 40:
+                        t.y += 5;
+                        break;
+                }
+            }
+            context.beginPath();
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            context.stroke();
+
+            setTimeout(OnFrame, 10);
+        }
+    </script>
+    </head>
+    <body>
+        <div style="margin: 0 auto;width:722px;margin-top:25px">	
+            <canvas id='canvas' style="border: 1px solid black;">Обновите браузер</canvas>
+        </div>
+        <script>
+            LoadPage();
+             setTimeout(OnFrame, 1000);  
+        </script>
+    </body>
+    </html>
+</html>
