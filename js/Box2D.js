@@ -5,43 +5,36 @@
  */
 
 /*вот исделал */
-Box2D = {};
+function Box2D(v1, v2){
+    /*
+    Позиция бокса
+    */
+    this.position = null;
 
-/*
-Позиция бокса
- */
-Box2D.position = null;
+    /*
+    Верхняя левая координата
+    */
+    this.leftUp = v1;
 
-/*
-Верхняя левая координата
- */
-Box2D.leftUp = null;
+    /*
+    Нижняя правая координата
+    */
+    this.rightDown = v2;
 
-/*
-Нижняя правая координата
- */
-Box2D.rightDown = null;
+    this.init = function(lup, rdown){
+        this.leftUp = lup;
+        this.rightDown = rdown;
+    }
 
-Box2D.Create = function(lup, rdown){
-    Box2D = Box2D;
-    Box2D.init(lup, rdown);
-    return newV;
+    this.draw = function(context){
+        
+        context.beginPath();
+        context.moveTo(this.leftUp.x, this.leftUp.y);
+        context.lineTo(this.leftUp.x, this.rightDown.y);
+        context.lineTo(this.rightDown.x, this.rightDown.y);
+        context.lineTo(this.rightDown.x, this.leftUp.y);
+        context.lineTo(this.leftUp.x, this.leftUp.y);
+        context.stroke();
+    }
 }
 
-Box2D.init = function(lup, rdown){
-    this.leftUp = lup;
-    this.rightDown = rdown;
-}
-
-Box2D.draw = function(context){
-    
-    alert(this.leftUp.x);
-
-    context.beginPath();
-    context.moveTo(this.leftUp.x, this.leftUp.y);
-    context.lineTo(this.leftUp.x, this.rightDown.x);
-    //context.lineTo(this.rightDown.x, this.rightDown.y);
-    //context.lineTo(this.rightDown.x, this.leftUp.y);
-    //context.lineTo(this.leftUp.x, this.leftUp.y);
-    context.stroke();
-}

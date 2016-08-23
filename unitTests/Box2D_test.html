@@ -16,12 +16,16 @@
         canv.width  = 45 * 16;
         canv.height = 45 * 16;
 
-        v = Vector2.Create(50, 50);
-       
-        v2 = Vector2.Create(100, 100);
-       
-        Box2D.init(v, v2);
-        Box2D.draw(context);
+        var v = new Vector2D(50, 50);
+        var v2 = new Vector2D(100, 100);
+        var box = new Box2D(v, v2);
+        box.draw(context);
+
+
+        var v = new Vector2D(150, 150);
+        var v2 = new Vector2D(170, 200);
+        var box = new Box2D(v, v2);
+        box.draw(context);
 
 	</script>
 </body>
