@@ -22,26 +22,28 @@ function checkKey(e) {
 function init(){
 	var canv = document.getElementById('canvas'); // Задаём контекст
 	context = canv.getContext('2d');           // Контекст холста
-	canv.width  = 45 * 16;
-	canv.height = 45 * 16;
+	// canv.width  = 45 * 16;
+	// canv.height = 45 * 16;
 	
-    for (var j = 0 ; j < 45; j ++){
-		for (var i = 0 ; i < 45; i ++){
-			t = Tile;
-			index = getRandomInt(1, 6);
-			t.init();	
-			t.setImageByIndex(index);
-			t.position = {x:j,y:i};
-			t.draw(context);
-		}
-	}
+ 	//  for (var j = 0 ; j < 45; j ++){
+	// 	for (var i = 0 ; i < 45; i ++){
+	// 		t = Tile;
+	// 		index = getRandomInt(1, 6);
+	// 		t.init();	
+	// 		t.setImageByIndex(index);
+	// 		t.position = {x:j,y:i};
+	// 		t.draw(context);
+	// 	}
+	// }
 	// танк
-	tank = Tank;
+	// tank = Tank;
 	// index = getRandomInt(1, 6);
-	tank.init();	
-	tank.setImageByIndex(1);
+	// tank.init();	
+	// tank.setImageByIndex(1);
 	// tank.position = {x:50,y:50};
-	tank.draw(context);
+	// tank.draw(context);
+
+	DrawMap(canv);
 };
 
 LoadPage = function () {
