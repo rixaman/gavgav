@@ -1,0 +1,28 @@
+<!doctype html> 
+<html>
+<meta charset='utf-8'>
+<head>
+	<title></title>
+	<script type="text/javascript" src="../js/gavgav/physics/Vector2.js"></script>
+    <script type="text/javascript" src="../js/gavgav/physics/Box2D.js"></script>
+    <script type="text/javascript" src="../js/gavgav/physics/Circle2D.js"></script>
+</head>
+<body>
+	<div style="margin: 0 auto;width:722px;margin-top:25px">	
+		<canvas id='canvas' style="border: 1px solid black;">Обновите браузер</canvas>
+	</div>
+	<script>
+		var canv = document.getElementById('canvas'); // Задаём контекст
+        context = canv.getContext('2d');           // Контекст холста
+        canv.width  = 45 * 16;
+        canv.height = 45 * 16;
+
+        //тестируем
+        //соприкосновение одним углом
+        var c = new Circle2D(
+                                new Vector2D(100, 100), 
+                                50);
+        c.draw(context);
+	</script>
+</body>
+</html>
