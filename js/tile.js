@@ -1,13 +1,13 @@
-tile = {};
-tile.size = 16;
-tile.init = function(){
-	tile.img = resources.get('images/TankSets.png');
+Tile = {};
+Tile.size = 16;
+Tile.init = function(){
+	Tile.img = resources.get('images/TankSets.png');
 }
 
-tile.setImageByName = function(name){
+Tile.setImageByName = function(name){
 
 }
-tile.setImageByIndex = function(index){
+Tile.setImageByIndex = function(index){
 	if(index == 1)this.positionInImage = {x:16,y:0};	
 	if(index == 2)this.positionInImage = {x:16,y:1};
 	if(index == 3)this.positionInImage = {x:16,y:2};
@@ -15,16 +15,16 @@ tile.setImageByIndex = function(index){
 	if(index == 5)this.positionInImage = {x:18,y:2};
 	if(index == 6)this.positionInImage = {x:16,y:3};
 }
-tile.positionInImage = {x:16,y:0};
-tile.position = null;
-tile.renderEntity = function(contex) {
+Tile.positionInImage = {x:16,y:0};
+Tile.position = null;
+Tile.renderEntity = function(contex) {
     ctx.save();
     ctx.translate(this.position.x, this.position.y);
     contex.drawImage(ctx);
     ctx.restore();
 }
 
-tile.draw = function(contex){
+Tile.draw = function(contex){
 	contex.drawImage(
 		this.img, 
 		this.positionInImage.x * this.size, 

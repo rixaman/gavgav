@@ -27,7 +27,7 @@ function init(){
 	
     for (var j = 0 ; j < 45; j ++){
 		for (var i = 0 ; i < 45; i ++){
-			t = tile;
+			t = Tile;
 			index = getRandomInt(1, 6);
 			t.init();	
 			t.setImageByIndex(index);
