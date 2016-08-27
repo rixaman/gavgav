@@ -19,6 +19,22 @@ function checkKey(e) {
     console.log(event.keyCode)
 }
 
+function update(tank) {
+	console.log('qq');
+    // меняем координаты шарика
+    tank.y -= 1;
+    // ball.y += ball.vY;
+
+}
+
+function play(canv) {
+    // draw(); // отрисовываем всё на холсте
+    // console.log('12');
+	DrawMap(canv);
+	tank = new DrawTank(160, 13 * cellSize);
+    update(tank); // обновляем координаты
+}
+
 function init(){
 	var canv = document.getElementById('canvas'); // Задаём контекст
 	context = canv.getContext('2d');           // Контекст холста
@@ -42,8 +58,7 @@ function init(){
 	// tank.setImageByIndex(1);
 	// tank.position = {x:50,y:50};
 	// tank.draw(context);
-
-	DrawMap(canv);
+	setInterval(function() { play(canv) }, 1000);
 };
 
 LoadPage = function () {

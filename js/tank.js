@@ -26,5 +26,17 @@ Tank.draw = function(contex){
 	contex.drawImage(this.img, this.positionInImage.x, this.positionInImage.y);	
 }
 Tank.reDraw = function(contex, x, y){
-	contex.drawImage(this.img, x, y);	
+	// contex.drawImage(this.img, x, y);	
+}
+
+
+function DrawTank(x, y) {
+    context.fillStyle = '#ff0000';
+    context.fillRect(x, y, cellSize, cellSize);
+    // context.fillStyle = '#909090';
+    // context.beginPath();
+    // context.moveTo(x, y + cellSize / 2);
+    // context.lineTo(x + cellSize / 2, y + cellSize / 2);
+    // context.lineTo(x + cellSize / 2, y);
+    context.fill();
 }
