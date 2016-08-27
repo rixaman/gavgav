@@ -66,6 +66,21 @@ function DrawHardBrick(x, y) {
     context.fillStyle = '#eeeeee';
     context.fillRect(x + cellSize / 8, y + cellSize / 8, cellSize / 4, cellSize / 4);
 }
+tiles = [];
+function LoadMap() {
+    for (var j = 0 ; j < 26; j ++){
+	    for (var i = 0 ; i < 26; i ++){
+            index = map[j][i];
+	 		if(index == 0)continue;
+            t = new Tile();
+	 		t.init();	
+	 		t.setImageByIndex(index);
+	 		t.position = {x:i + 2, y:j + 2};
+            tiles[tiles.length] = t;
+        }
+    }
+}
+
 
 function DrawMap(canv) {
 	canv.width = 15 * cellSize;
@@ -73,11 +88,11 @@ function DrawMap(canv) {
 	context.fillStyle = '#ccc';
 	context.fillRect(0, 0, canv.width, canv.height);
 	context.fillStyle = '#000';
-	context.fillRect(cellSize, cellSize, 13 * cellSize, 13 * cellSize)
+	context.fillRect(cellSize, cellSize, 13 * cellSize, 13 * cellSize);
 	// Цикл обрабатывающий массив в котором содержатся значения элементов карты
 	// если попадается 1 то рисуется кирпичный блок
 	// если 2, то бетонная стена
-	for (var j = 0; j < 26; j++)
+	/*for (var j = 0; j < 26; j++)
 	for (var i = 0; i < 26; i++) {
 	    switch (map[j][i]) {
 	        case 1:
@@ -86,6 +101,10 @@ function DrawMap(canv) {
 	        case 2:
 	            DrawHardBrick(i * cellSize / 2 + cellSize, j * cellSize / 2 + cellSize);
 	            break;
-	    }
-	}	
+	    }*
+	}	*/
+
+    for(var i = 0; i < tiles.length;i++){
+        tiles[i].draw(context);
+    }
 }

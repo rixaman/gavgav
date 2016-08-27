@@ -28,6 +28,7 @@ function update(tank) {
 }
 
 function play(canv) {
+	alert("play");
     // draw(); // отрисовываем всё на холсте
     // console.log('12');
 	DrawMap(canv);
@@ -58,7 +59,10 @@ function init(){
 	// tank.setImageByIndex(1);
 	// tank.position = {x:50,y:50};
 	// tank.draw(context);
-	setInterval(function() { play(canv) }, 1000);
+	LoadMap();
+
+	DrawMap(canv);
+	//setInterval(function() { play(canv) }, 1000);
 };
 
 LoadPage = function () {
