@@ -10,8 +10,27 @@ var key = pjs.keyControl;
 key.initKeyControl();
 
 var tile = pjs.tiles.newImage('imgs/chrome.png');
+var tile2 = pjs.tiles.newImage('imgs/bigboom.png');
+var tile3 = pjs.tiles.newImage('imgs/spaceship.png');
+var tile4 = pjs.tiles.newImage('imgs/packet.png');
+
+var animpacket = {
+packet:tile4.getAnimation(0, 0, 50, 50, 2),
+}
+
+
+var animGalaxyGa = {
+boom:tile2.getAnimation(0, 117, 39, 156, 13),
+}
+
+var spaceShip= {
+ship:tile3.getAnimation(0, 0, 50, 50, 1),
+}
+
+
 var anim = {
-  dragon : tile.getAnimation(14, 9, 44, 47, 2),
+  dragon : tile.getAnimation(14, 9, 44, 47, 1),
+  dragonrun : tile.getAnimation(14, 9, 44, 47, 2),
   dethdragon:tile.getAnimation(103, 9, 44, 47, 1),
   gameOver : tile.getAnimation(162, 8, 203, 56, 1),
   kaktus1 : tile.getAnimation(92, 93, 27, 50, 1),
@@ -19,7 +38,7 @@ var anim = {
 };
 
 var spacecar = game.newAnimationObject({  
-  	animation : anim.kaktus1,
+  	animation : spaceShip.ship,
 	w : 50, h : 50,
   	x : 600, y : 500  
 });
@@ -37,12 +56,13 @@ var gameOver = game.newAnimationObject({
   x:0,y:0
 });
 
-var kbox=[], packet=[];
-var crate_kbox = true;
-var speed = 5, 
-    kboxcol=15,
-    wincol=kboxcol;
-
+var kbox=[], packet=[], boomPoint=[];
+var 	speed = 5, 
+	kboxtime = 0,
+	kboxtimemax = 100,
+	timerkill = 0,
+	score=0,
+	speedkbox=1;
 
 
 //-------------------------------------------
@@ -50,92 +70,130 @@ var speed = 5,
 game.newLoop('game', function () {
 game.fill('#D9D9D9');
 
-if (crate_kbox==true) 
-	{
-	createkbox(kboxcol,kbox); 
-	crate_kbox=false;
-	}
+ brush.drawText({
+  x : 100, y : 100,
+  text : 'fps: '+game.getFPS(),
+  color : 'white',
+  size : 30,
+  font : 'serif'
+ });
 
+ brush.drawText({
+  x : 200, y : 100,
+  text : 'score: '+score,
+  color : 'white',
+  size : 30,
+  font : 'serif'
+ });
 
+ brush.drawText({
+  x : 330, y : 100,
+  text : 'speed: '+speedkbox,
+  color : 'green',
+  size : 30,
+  font : 'serif'
+ });
+
+                 
 //отлицаигрока
-//pjs.camera.moveTimeC(spacecar.getPosition(1), 10);
+pjs.camera.moveTimeC(spacecar.getPosition(1), 20);
 
 
 //нажатие клавиш
 keyIsDown();
 
-// if packet exist
+// если packet есть то проверяем их на столкновение
 if (objLenght(packet)>0) 
 {	
 	for (var i = 0; i < objLenght(packet); i++) 
 	{
-        packet[i].draw();
-
+        packet[i].draw();        
 	//проверка каждого элемента массива kbox на столкновение с элементами массива packet
 	for (var j = 0; j < objLenght(kbox); j++) 
 		{
-
 		if ((packet[i])&&(packet[i].isDynamicIntersect(kbox[j].getDynamicBox()))) 
 			{
-			console.log("TADAAAAADAAAAH!!!!");
-
-			//dethdragon
-			kbox[j].setAnimation(anim.dethdragon);
-			//kbox[j].setAnimation(anim.dragon);
-			
-			//kbox[j].rotateForAngle(180, 10); 
-			//kbox[j].moveAngle(spacecar.getPosition(), 1);
-			//kbox[j].draw();
-			//kbox[j].animation=anim.dragon;
-			kbox.splice(j,1);
-
-			packet.splice(i,1);
-			
+                        console.log("TADAAAAADAAAAH!!!!");
+			//попали отнимаем жизнь!!!
+			kbox[j].life--;			
+			//координата столкновения packet и kbox[j]
+			//создаем обьект анимации взрыыва
+			boomDraw(packet[i].getPosition().x,packet[i].getPosition().y);
+			//удаляем снаряд
+			packet.splice(i,1);			
 		        }
 		}
+
     	if (packet[i]) 
 		{
+		//если packet уходит за пределы избаляемся от него
 		if (packet[i].getPosition().y<0)
 			{
 			packet.splice(i,1);
 			} else 
 			{
 			packet[i].move(point(0, -speed*1.5));
-			}
-		
+			}		
 		}
 	}
-
-	//если packet уходит за пределы избаляемся от него
 }
 
-//проверка на победу
-if (objLenght(kbox)<=0) 
-	{
-	
-	gameWin.setPositionC(spacecar.getPosition());
-  	gameWin.draw();
-	spacecar.setVisible(false); 
-	pjs.game.stop();
-	}
+//отрисовываем взрыв в месте попадания
+if (objLenght(boomPoint)>0) {endAnimation(boomPoint);};
+
 
 
 //отрисовка обьектов
 for (var i = 0; i < objLenght(kbox); i++) 
 	{
-	kbox[i].draw();
-	kbox[i].rotate(spacecar.getPosition(1));
-	kbox[i].moveTime(spacecar.getPosition(), 200);
-	if (spacecar.isDynamicIntersect(kbox[i].getDynamicBox())) 
-		{	
-		console.log("GAME OWER!!!!!");
-		gameOver.setPositionC(spacecar.getPosition());
-  		spacecar.setVisible(false);
-		gameOver.draw();		
-		pjs.game.stop();
+
+	//проверка жизней и назначение действий
+	if (kbox[i].life==2) 
+		{
+			kbox[i].setAnimation(anim.dragonrun);
+			//kbox[i].moveAngle(spacecar.getPosition(),1);
+			kbox[i].rotate(spacecar.getPosition(1));
+    			//kbox[i].drawDynamicBox('red');
+    			kbox[i].moveAngle(speedkbox);			
+		}else 
+	if (kbox[i].life==1)
+		{
+			kbox[i].setAnimation(anim.dethdragon);
+			//kbox[j].moveAngle();
+		}else 
+	if (kbox[i].life<=0)
+		{
+			score = score + 10;
+			if (score>=100){speedkbox=2} else if(score>=200){speedkbox=3} else if(score>=400){speedkbox=4} else if(score>=500){speedkbox=10}
+			if (timerkill==5)
+				{
+				if (kboxtimemax>=0) 
+					{
+					kboxtimemax=kboxtimemax-5;
+					}
+				timerkill=0;
+				} else {timerkill=timerkill+1;}
+			kbox.splice(i,1);
 		}
+
+	if (kbox[i])
+	{
+	//отрисовываем противника
+	kbox[i].draw();
+	//проверка на поражение	
+	//если kbox[i] доходят до spacecar: конец игры
+	if (spacecar.isDynamicIntersect(kbox[i].getDynamicBox())){checkDestruction();}
 	}
-	spacecar.draw();
+}
+
+//проверка на победу
+//checkWin();
+
+spacecar.draw();
+
+if (kboxtime==kboxtimemax){createkbox(); kboxtime=0;}
+
+kboxtime++;
 
 });
 //-------------------------------------------
