@@ -22,8 +22,6 @@ function checkDestruction()
 		size : 100,
 		font : 'serif'
 	});
-
-
 	pjs.game.stop();
 }
 
@@ -85,5 +83,3 @@ function createkbox()
 	kbox.push(time);
 }
 //-------------------------------------------
-
-
