@@ -1,11 +1,11 @@
 function checkWin()                        
 {
-if (objLenght(kbox)<=0) 
+	if (objLenght(kbox)<=0) 
 	{	
-	gameWin.setPositionC(spacecar.getPosition());
-  	gameWin.draw();
-	spacecar.setVisible(false); 
-	pjs.game.stop();
+		gameWin.setPositionC(spacecar.getPosition());
+	  	gameWin.draw();
+		spacecar.setVisible(false); 
+		pjs.game.stop();
 	}
 }
 

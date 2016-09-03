@@ -14,20 +14,6 @@ var tile2 = pjs.tiles.newImage('imgs/bigboom.png');
 var tile3 = pjs.tiles.newImage('imgs/spaceship.png');
 var tile4 = pjs.tiles.newImage('imgs/packet.png');
 
-var animpacket = {
-	packet:tile4.getAnimation(0, 0, 50, 50, 2),
-}
-
-
-var animGalaxyGa = {
-	boom:tile2.getAnimation(0, 117, 39, 156, 13),
-}
-
-var spaceShip= {
-ship:tile3.getAnimation(0, 0, 50, 50, 1),
-}
-
-
 var anim = {
 	dragon : tile.getAnimation(14, 9, 44, 47, 1),
 	dragonrun : tile.getAnimation(14, 9, 44, 47, 2),
@@ -36,6 +22,15 @@ var anim = {
 	kaktus1 : tile.getAnimation(92, 93, 27, 50, 1),
 	kaktus2 : tile.getAnimation(135, 117, 20, 24, 1),
 };
+var animGalaxyGa = {
+	boom:tile2.getAnimation(0, 117, 39, 156, 13),
+}
+var spaceShip= {
+	ship:tile3.getAnimation(0, 0, 50, 50, 1),
+}
+var animpacket = {
+	packet:tile4.getAnimation(0, 0, 50, 50, 2),
+}
 
 var spacecar = game.newAnimationObject({  
   	animation : spaceShip.ship,
@@ -48,7 +43,6 @@ var gameWin = game.newAnimationObject({
 	w:600, h:500,
 	x:0, y:0
 });
-
 
 var gameOver = game.newAnimationObject({
 	animation:anim.gameOver,
