@@ -145,35 +145,35 @@ if (objLenght(boomPoint)>0) {endAnimation(boomPoint);};
 
 //отрисовка обьектов
 for (var i = 0; i < objLenght(kbox); i++) 
+{
+	//проверка жизней и назначение действий
+	if (kbox[i].life==2) 
 	{
-		//проверка жизней и назначение действий
-		if (kbox[i].life==2) 
+		kbox[i].setAnimation(anim.dragonrun);
+		//kbox[i].moveAngle(spacecar.getPosition(),1);
+		kbox[i].rotate(spacecar.getPosition(1));
+			//kbox[i].drawDynamicBox('red');
+			kbox[i].moveAngle(speedkbox);			
+	}else 
+	if (kbox[i].life==1)
+	{
+		kbox[i].setAnimation(anim.dethdragon);
+		//kbox[j].moveAngle();
+	}else 
+	if (kbox[i].life<=0)
+	{
+		score = score + 10;
+		if (score>=100){speedkbox=2} else if(score>=200){speedkbox=3} else if(score>=400){speedkbox=4} else if(score>=500){speedkbox=10}
+		if (timerkill==5)
 		{
-			kbox[i].setAnimation(anim.dragonrun);
-			//kbox[i].moveAngle(spacecar.getPosition(),1);
-			kbox[i].rotate(spacecar.getPosition(1));
-    			//kbox[i].drawDynamicBox('red');
-    			kbox[i].moveAngle(speedkbox);			
-		}else 
-		if (kbox[i].life==1)
-		{
-			kbox[i].setAnimation(anim.dethdragon);
-			//kbox[j].moveAngle();
-		}else 
-		if (kbox[i].life<=0)
-		{
-			score = score + 10;
-			if (score>=100){speedkbox=2} else if(score>=200){speedkbox=3} else if(score>=400){speedkbox=4} else if(score>=500){speedkbox=10}
-			if (timerkill==5)
+			if (kboxtimemax>=0) 
 			{
-				if (kboxtimemax>=0) 
-				{
-					kboxtimemax=kboxtimemax-5;
-				}
-				timerkill=0;
-			} else {timerkill=timerkill+1;}
-			kbox.splice(i,1);
-		}
+				kboxtimemax=kboxtimemax-5;
+			}
+			timerkill=0;
+		} else {timerkill=timerkill+1;}
+		kbox.splice(i,1);
+	}
 
 	if (kbox[i])
 	{
