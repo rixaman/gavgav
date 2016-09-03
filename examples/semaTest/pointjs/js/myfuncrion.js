@@ -11,35 +11,35 @@ if (objLenght(kbox)<=0)
 
 function checkDestruction()
 {
-console.log("GAME OWER!!!!!");
-//gameOver.setPositionC(spacecar.getPosition());
-//spacecar.setVisible(false);
-//gameOver.draw();		
- brush.drawText({
-  x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
-  text : 'you score: '+score,
-  color : 'red',
-  size : 100,
-  font : 'serif'
- });
+	console.log("GAME OWER!!!!!");
+	//gameOver.setPositionC(spacecar.getPosition());
+	//spacecar.setVisible(false);
+	//gameOver.draw();		
+	brush.drawText({
+		x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
+		text : 'you score: '+score,
+		color : 'red',
+		size : 100,
+		font : 'serif'
+	});
 
 
-pjs.game.stop();
+	pjs.game.stop();
 }
 
 function boomDraw(objx,objy)
 {
-boomPoint.push(new game.newAnimationObject({animation:animGalaxyGa.boom,delay:1,w:50,h:150,x:objx,y:objy}));
+	boomPoint.push(new game.newAnimationObject({animation:animGalaxyGa.boom,delay:1,w:50,h:150,x:objx,y:objy}));
 }
 
 function endAnimation(boomPoint)
 {
-for (var i = 0; i < objLenght(boomPoint); i++) 
+	for (var i = 0; i < objLenght(boomPoint); i++) 
 	{
 		if (boomPoint[i]) 
 		{
-		boomPoint[i].draw();
-		if (boomPoint[i].frame==boomPoint[i].anim.r){boomPoint.splice(i,1);};
+			boomPoint[i].draw();
+			if (boomPoint[i].frame==boomPoint[i].anim.r){boomPoint.splice(i,1);};
 		}
 	}
 }
