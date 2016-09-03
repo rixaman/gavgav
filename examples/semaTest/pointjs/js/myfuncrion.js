@@ -47,29 +47,29 @@ for (var i = 0; i < objLenght(boomPoint); i++)
 
 function keyIsDown()
 {
-  if (key.isDown('UP')) {
-    spacecar.move(point(0, -speed*1.5));
-  }
+	if (key.isDown('UP')) {
+		spacecar.move(point(0, -speed*1.5));
+	}
 
-  if (key.isDown('DOWN')) {
-    spacecar.move(point(0, speed*1.5));
-  }
+	if (key.isDown('DOWN')) {
+		spacecar.move(point(0, speed*1.5));
+	}
 
-  if (key.isDown('LEFT')) {
-    spacecar.move(point(-speed*1.5, 0));
-  }
+	if (key.isDown('LEFT')) {
+		spacecar.move(point(-speed*1.5, 0));
+	}
 
-  if (key.isDown('RIGHT')) {
-    spacecar.move(point(speed*1.5, 0));
-  }
+	if (key.isDown('RIGHT')) {
+		spacecar.move(point(speed*1.5, 0));
+	}
 
-  if (key.isPress('SPACE')) 
+	if (key.isPress('SPACE')) 
 	{    
-	console.log(objLenght(kbox));
-	scpos = spacecar.getPosition();
-	scposx=scpos.x; 
-	scposy=scpos.y;
-                //ñîçäàåì îáüåêò è êëàäåì â ìàññèâ packetîâ
+		console.log(objLenght(kbox));
+		scpos = spacecar.getPosition();
+		scposx=scpos.x; 
+		scposy=scpos.y;
+		//ÑÐ¾Ð·Ð´Ð°ÐµÐ¼ Ð¾Ð±ÑŒÐµÐºÑ‚ Ð¸ ÐºÐ»Ð°Ð´ÐµÐ¼ Ð² Ð¼Ð°ÑÑÐ¸Ð² packetÐ¾Ð²
 		
 		packet.push(new game.newAnimationObject({animation:animpacket.packet,delay:0,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy}));
 		//console.log(packet);	
