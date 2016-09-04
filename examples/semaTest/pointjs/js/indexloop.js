@@ -2,15 +2,41 @@
 var pjs = new PointJS('2d', 400, 400);
 pjs.system.initFullPage();
 
+var log = pjs.system.log;
 var game  = pjs.game;
 var point = pjs.vector.point;
 var brush = pjs.brush;
-
+var OOP = pjs.OOP;
+var math = pjs.math;
+var camera = pjs.camera;
+//---------------------------------------------------
+//инициализация контроля клавиатуры и мыши
 var key = pjs.keyControl;
 key.initKeyControl();
-
 var mouse = pjs.mouseControl;
 mouse.initMouseControl();
+//---------------------------------------------------
+
+
+//---------------------------------------------------
+//создание обьектов звездногонеба
+var stars = [];
+OOP.forInt(1000, function () {
+  var size = math.random(1, 2);
+  stars.push(game.newRectObject({
+    x : math.random(0, game.getWH().w)+0.0001,
+    y : math.random(0, game.getWH().h)+0.0001,
+    w : size, h : size,
+    fillColor : pjs.colors.randomColor(200, 255),
+    userData : {
+      dx : math.random(-2, 2),
+      dy : math.random(-2, 2)
+    }
+  }));
+});
+//---------------------------------------------------
+
+
 
 //---------------------------------------------------
 //Замена стандартного курсора каким-либо изображением
@@ -65,15 +91,22 @@ var speed = 7,
 	speedkbox=1,
 	lifekbox=5;
 
+//растояние видимости обьектов
+var visdist = 300;
+
 //-------------------------------------------
 //LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP
 game.newLoop('game', function () {
-	game.fill('#D9D9D9');
+	game.clear();
+	//game.fill('#D9D9D9');
+	game.fill('black');
+
+	starSky();
 
 	textDraw();
 	                 
 	//отлицаигрока
-	pjs.camera.moveTimeC(spacecar.getPosition(1), 20);
+	//pjs.camera.moveTimeC(spacecar.getPosition(1), 20);
 	spacecar.rotate(mouse.getPosition())
 
 	//нажатие клавиш
@@ -84,7 +117,13 @@ game.newLoop('game', function () {
 	{	
 		for (var i = 0; i < objLenght(packet); i++) 
 		{
-	        packet[i].draw();        
+
+			var fact = packet[i].getDistanceC(spacecar.getPosition());
+    		if (fact <= visdist) 
+    			{
+	        	packet[i].draw();        
+	        	}
+
 			//проверка каждого элемента массива kbox на столкновение с элементами массива packet
 			for (var j = 0; j < objLenght(kbox); j++) 
 			{
@@ -95,7 +134,10 @@ game.newLoop('game', function () {
 					kbox[j].life--;			
 					//координата столкновения packet и kbox[j]
 					//создаем обьект анимации взрыыва
-					boomDraw(packet[i].getPosition().x,packet[i].getPosition().y);
+					if (fact <= visdist) 
+    					{
+						boomDraw(packet[i].getPosition().x,packet[i].getPosition().y);
+						}
 					//удаляем снаряд
 					packet.splice(i,1);			
 			    }
@@ -159,15 +201,11 @@ game.newLoop('game', function () {
 			console.log(score);
 			switch(score)
 			{
-				case 100: {speedkbox=2; break;}  
-				case 200: {speedkbox=3;  break;}
-				case 300: {speedkbox=4;  break;}
-				case 400: {speedkbox=5;  break;}
-				case 500: {speedkbox=6;  break;}
-				case 600: {speedkbox=7;  break;}
-				case 700: {speedkbox=8;  break;}
-				case 800: {speedkbox=9;  break;}
-				case 900: {speedkbox=10;  break;}
+				case 200: {speedkbox=2;  break;}
+				case 400: {speedkbox=3;  break;}
+				case 600: {speedkbox=4;  break;}
+				case 800: {speedkbox=5;  break;}
+				case 900: {speedkbox=6;  break;}
 				case 1000: {/*WIN*/checkWin();break;}
 			}
 
@@ -180,7 +218,12 @@ game.newLoop('game', function () {
 		if (kbox[i])
 		{
 			//отрисовываем противника
-			kbox[i].draw();
+			var fact = kbox[i].getDistanceC(spacecar.getPosition());
+    		if (fact <= visdist) 
+    			{
+    		kbox[i].visible=true; 
+			kbox[i].draw();    				
+    			}
 			//проверка на поражение	
 			//если kbox[i] доходят до spacecar: конец игры
 			if (spacecar.isDynamicIntersect(kbox[i].getDynamicBox())){checkDestruction();}

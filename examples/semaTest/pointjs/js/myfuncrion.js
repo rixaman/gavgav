@@ -1,3 +1,28 @@
+function starSky()
+{
+
+var dt = game.getDT();
+var camPos = camera.getPosition();
+
+OOP.forArr(stars, function (el) 
+	{
+	el.draw();
+    var fact = el.getDistanceC(spacecar.getPosition());
+    if (fact <= visdist) 
+    	{
+      	el.visible=true;//el.transparent(0.01);
+      	el.move(point(el.dx*dt, el.dy*dt));
+      	if (el.x+el.w < camPos.x) el.x = -el.w + camPos.x+game.getWH().w;
+      	if (el.y+el.h < camPos.y) el.y = -el.h + camPos.y+game.getWH().h;
+      	if (el.x > camPos.x+game.getWH().w) el.x = camPos.x;
+      	if (el.y > camPos.y+game.getWH().h) el.y = camPos.x;
+    	} else 
+    	{
+    	el.visible=false;
+      	//el.transparent(-0.01);
+    	}
+	});
+}
 //вызывает победу и завершает игру
 function checkWin()                        
 {
@@ -128,7 +153,7 @@ function keyIsDown()
 		scposx=scpos.x; 
 		scposy=scpos.y;
 		//создаем обьект и кладем в массив packetов
-		newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:10,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
+		newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:3,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
 		//задаем угол packet считывая угол мыши 
 		newpacket.angle = spacecar.getAngle();
 		//newpacket.myAngle = spacecar.getAngle();
@@ -143,7 +168,6 @@ if (mouse.isPress('RIGHT'))
 		scposx=scpos.x; 
 		scposy=scpos.y;
 		//создаем обьект и кладем в массив packetов
-		console.log(objLenght(kbox));
 		for (var i = 0; i < objLenght(kbox); i++) 
 		{
 			newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:0,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
