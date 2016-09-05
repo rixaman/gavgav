@@ -1,6 +1,30 @@
-function starSky()
+function lifeDraw(kbox)
 {
+	//console.log(kbox);	
+	kbox.x
+	kbox.y
+	kbox.life
 
+	kboxtext = "";
+
+	for (var i = 0; i < kbox.life; i++) 
+	{
+		kboxtext = kboxtext+".";		
+	}
+
+	brush.drawText({
+		x : kbox.x, y : kbox.y-25,
+		text : kboxtext,
+		color : 'white',
+		size : 30,
+		font : 'serif'
+	});
+
+}
+
+//
+function skyDrawMove()
+{
 var dt = game.getDT();
 var camPos = camera.getPosition();
 
@@ -86,9 +110,9 @@ function textDraw()
 //-------------------------------------------
 //проиграть анимацию взрыва ракеты
 //-------------------------------------------
-function boomDraw(objx,objy)
+function boomDraw(objx,objy,thisanim)
 {
-	boomPoint.push(new game.newAnimationObject({animation:animGalaxyGa.boom,delay:1,w:40,h:40,x:objx,y:objy}));
+	boomPoint.push(new game.newAnimationObject({animation:thisanim,delay:1,w:40,h:40,x:objx,y:objy}));
 }
 
 function endAnimation(boomPoint)
@@ -164,18 +188,23 @@ function keyIsDown()
 if (mouse.isPress('RIGHT'))  
 	{    
 		//console.log("mouse right click");
-		scpos = spacecar.getPosition();
-		scposx=scpos.x; 
-		scposy=scpos.y;
-		//создаем обьект и кладем в массив packetов
-		for (var i = 0; i < objLenght(kbox); i++) 
-		{
-			newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:0,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
-			//задаем угол packet считывая угол мыши 
-			newpacket.angle = pjs.vector.getAngle2Points(spacecar.getPosition(),kbox[i].getPosition());
-			//newpacket.myAngle = spacecar.getAngle();
-			packet.push(newpacket);
-		}
+		
+		if (score>=20) 
+			{
+			score = score - 20;
+			scpos = spacecar.getPosition();
+			scposx=scpos.x; 
+			scposy=scpos.y;
+			//создаем обьект и кладем в массив packetов
+			for (var i = 0; i < objLenght(kbox); i++) 
+			{
+				newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:0,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
+				//задаем угол packet считывая угол мыши 
+				newpacket.angle = pjs.vector.getAngle2Points(spacecar.getPosition(),kbox[i].getPosition());
+				//newpacket.myAngle = spacecar.getAngle();
+				packet.push(newpacket);
+			} 
+		} 
 	}
 }
 //-------------------------------------------
@@ -183,6 +212,7 @@ if (mouse.isPress('RIGHT'))
 function createkbox()
 {
 	//выбираем рандомно сторону появления противника
+	//createkboxtime=createkboxtime-10;
 	side = irand(1, 4);
 	//создаем противника
 	var time = new game.newAnimationObject({animation:animenemy.enemy,delay:25,w:50,h:50,x:-100,y:-100});
