@@ -177,7 +177,9 @@ function keyIsDown()
 		scposx=scpos.x; 
 		scposy=scpos.y;
 		//создаем обьект и кладем в массив packetов
-		newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:3,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy});
+		//scposcenter = spacecar.getCenter();
+		//(spacecar.getSize().w/4)
+		newpacket = new game.newAnimationObject({animation:animpacket.packet,delay:3,w:25,h:25,x:scposx+(spacecar.getSize().w/4),y:scposy+(spacecar.getSize().h/4)});
 		//задаем угол packet считывая угол мыши 
 		newpacket.angle = spacecar.getAngle();
 		//newpacket.myAngle = spacecar.getAngle();
@@ -213,6 +215,7 @@ function createkbox()
 {
 	//выбираем рандомно сторону появления противника
 	//createkboxtime=createkboxtime-10;
+	kboxcreatebool = true;
 	side = irand(1, 4);
 	//создаем противника
 	var time = new game.newAnimationObject({animation:animenemy.enemy,delay:25,w:50,h:50,x:-100,y:-100});
@@ -261,3 +264,25 @@ function createkbox()
 			}
 }
 //-------------------------------------------
+function createboss()
+{
+	var boss = new game.newAnimationObject({animation:animenemy1.enemy1,delay:25,w:96,h:82});
+	boss.life = 5;
+	boss.x = -50;
+	boss.y = -50; 
+	kboss.push(boss);
+	//прописать фалсе когда босс уничтожен
+	//bosscreatebool = false;
+}
+
+function bossAct()
+{		
+	for (var i = 0; i < objLenght(kboss); i++) 
+	{
+		//двигаем босса в сторону игрока
+		kboss[i].moveAngle(speedboss);	
+		//поворачиваем босса в сторону игрока
+		kboss[i].rotate(spacecar.getPosition(1));
+		//действия босса
+	}
+}

@@ -1,10 +1,18 @@
-var kbox=[], packet=[], boomPoint=[];
+var kbox=[], kboss=[], packet=[], boomPoint=[];
 var speed = 7, 
 	speedsc = 3,
-	kboxtime = 0,
+	//время появления врага
+	kboxtime = 2000,
+	//признак создания противника
+	kboxcreatebool=true,
+	//признак создания босса
+	bosscreatebool=true,
 	kboxtimemax = 70,
 	timerkill = 0,
 	score=0,
+	//скорость босса
+	speedboss = 0.5,
+	//скорость противника
 	speedkbox=1;
 
 //растояние видимости обьектов
@@ -57,30 +65,38 @@ OOP.forInt(1000, function () {
 mouse.setCursorImage("imgs/shoot.png");
 //img - string, путь к картинке
 //---------------------------------------------------
-var tile1 = pjs.tiles.newImage('imgs/spaceshipboom.png');
-var tile2 = pjs.tiles.newImage('imgs/bigboom.png');
-var tile3 = pjs.tiles.newImage('imgs/spaceship.png');
-var tile4 = pjs.tiles.newImage('imgs/packet.png');
-var tile5 = pjs.tiles.newImage('imgs/enemy.png');
 
-var spaceshipboom = {
-	ssboom:tile1.getAnimation(0, 0, 64.4, 64, 9),
-}
+	//спрайты анимации
+	var tile1 = pjs.tiles.newImage('imgs/spaceshipboom.png');
+	var tile2 = pjs.tiles.newImage('imgs/bigboom.png');
+	var tile3 = pjs.tiles.newImage('imgs/spaceship.png');
+	var tile4 = pjs.tiles.newImage('imgs/packet.png');
+	var tile5 = pjs.tiles.newImage('imgs/enemy.png');
+	var tile6 = pjs.tiles.newImage('imgs/enemy1.png');
 
-var animGalaxyGa = {
-	boom:tile2.getAnimation(0, 0, 39, 40, 13),
-}
-var spaceShip= {
-	ship:tile3.getAnimation(0, 0, 50, 50, 1),
-}
-var animpacket = {
-	packet:tile4.getAnimation(0, 0, 50, 50, 2),
-}
+	var spaceshipboom = {
+		ssboom:tile1.getAnimation(0, 0, 64.4, 64, 9),
+	}
 
-var animenemy = {
-	enemy:tile5.getAnimation(0, 0, 65, 60, 1),
-}
+	var animGalaxyGa = {
+		boom:tile2.getAnimation(0, 0, 39, 40, 13),
+	}
+	var spaceShip= {
+		ship:tile3.getAnimation(0, 0, 50, 50, 1),
+	}
+	var animpacket = {
+		packet:tile4.getAnimation(0, 0, 50, 50, 2),
+	}
 
+	var animenemy = {
+		enemy:tile5.getAnimation(0, 0, 65, 60, 1),
+	}
+
+	var animenemy1 = {
+		enemy1:tile6.getAnimation(0, 0, 96, 82, 1),
+	}
+	
+	
 
 //игрок
 var spacecar = game.newAnimationObject({  
@@ -90,12 +106,14 @@ var spacecar = game.newAnimationObject({
 });
 spacecar.life = spacecarlife;
 
+//обект анимации победы 
 var gameWin = game.newAnimationObject({
 	//animation : anim.dethdragon,
 	w:600, h:500,
 	x:0, y:0
 });
 
+//обект анимации проигрыша 
 var gameOver = game.newAnimationObject({
 	//animation:anim.gameOver,
 	w:600,h:500,
@@ -109,12 +127,10 @@ var gameOver = game.newAnimationObject({
 game.newLoop('game', function () {
 	game.clear();
 
-	//game.fill('#D9D9D9');
+	//заливаем жкран черным цветом
 	game.fill('black');
-
 	//отрисовываем звезды
 	skyDrawMove();
-
 	//отрисовываем текст
 	textDraw();
 	                 
@@ -124,7 +140,7 @@ game.newLoop('game', function () {
 	//поворачиваем игрока к мышке
 	spacecar.rotate(mouse.getPosition())
 
-	//нажатие клавиш
+	//обрабатываем нажатие клавиш
 	keyIsDown();
 
 	// если packet есть то проверяем их на столкновение
@@ -173,13 +189,26 @@ game.newLoop('game', function () {
 		}
 	}
 
-	//отрисовываем взрыв в месте попадания
+	//если существуют обьекты анимации взрыва то проверяем не закончился ли он, если закончился то удаляем его
 	if (objLenght(boomPoint)>0) {endAnimation(boomPoint);};
+
+	//--------------------------------------------------------------------
+	//если босс существует
+	if (kboss)
+		{
+			//назначаем действия над боссом
+			for (var i = 0; i < objLenght(kboss); i++) {kboss[i].draw();}			
+			bossAct();
+			//отрисовываем боссы
+		}
+	//--------------------------------------------------------------------
 
 	//отрисовка обьектов
 	for (var i = 0; i < objLenght(kbox); i++) 
 	{
+		//двигаем противника в сторону игрока
 		kbox[i].moveAngle(speedkbox);	
+		//поворачиваем противника в сторону игрока
 		kbox[i].rotate(spacecar.getPosition(1));
 		//проверка жизней и назначение действий
 		if (kbox[i].life==lifekbox) 
@@ -194,18 +223,7 @@ game.newLoop('game', function () {
 		} else
 		if (kbox[i].life<=0)
 		{
-			//если убили 10 шт то увеличиваем скорость их появления
 			//-----------------------------------
-			if (timerkill==10)
-			{
-				if (kboxtimemax>=0) 
-				{
-					kboxtimemax=kboxtimemax-5;
-				}
-				timerkill=0;
-			} else {timerkill=timerkill+1;}
-			//-----------------------------------
-
 			//добавляем в счете и в зависимости от счета выставляем скорость противника
 			score = score + 10;
 			console.log(score);
@@ -213,6 +231,15 @@ game.newLoop('game', function () {
 			{
 				case 200: {speedkbox=2;  break;}
 				case 400: {speedkbox=3;  break;}
+				case 500: 	{
+								//если босс не существует то создаем его
+								if (bosscreatebool=true) 
+									{
+										createboss();
+										console.log("BOOOOOOOS!!!!!!")
+									}  
+								break;
+							}				
 				case 600: {speedkbox=4;  break;}
 				case 800: {speedkbox=5;  break;}
 				case 900: {speedkbox=6;  break;}
@@ -228,12 +255,11 @@ game.newLoop('game', function () {
 			var fact = kbox[i].getDistanceC(spacecar.getPosition());
     		if (fact <= visdist) 
     			{
-    		kbox[i].visible=true; 
+    				kbox[i].visible=true; 
 
-			kbox[i].draw();   	
-			//отрисовываем жизни			
-    		lifeDraw(kbox[i]);
-
+					kbox[i].draw();   	
+					//отрисовываем жизни			
+    				lifeDraw(kbox[i]);
     			}
 			//проверка на поражение	
 			//если kbox[i] доходят до spacecar: конец игры
@@ -264,9 +290,16 @@ game.newLoop('game', function () {
 	//отрисовываем жизни над игроком
 	lifeDraw(spacecar);
 
-	//создаем противника
-	if (kboxtime>=kboxtimemax){createkbox(); kboxtime=0;}
-	kboxtime++;
+	//таймер появления противника
+	if (kboxcreatebool==true) 
+		{
+			kboxcreatebool = false;
+			setTimeout(function()
+			{
+				createkbox();
+				kboxtime=kboxtime-10;
+			}, kboxtime);
+		}
 
 });
 //-------------------------------------------
