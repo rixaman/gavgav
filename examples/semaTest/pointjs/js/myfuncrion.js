@@ -10,7 +10,7 @@ function craftDrawDrop()
 			drop[i].draw();
 			if (drop[i].isDynamicIntersect(spacecar.getDynamicBox())) 
 				{
-					if (spacecarlifemax<=spacecar.life) {score=score+30} else {spacecar.life++;}
+					if (spacecarlifemax<=spacecar.life) {countingPoints(30);} else {spacecar.life++;}
 					drop.splice(i,1);
 				}				
 		}
@@ -110,7 +110,7 @@ function checkDestruction()
 	//gameOver.draw();		
 	//brush.drawText({
 	//	x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
-	//	text : 'you score: '+score,
+	//	text : 'you points: '+points,
 	//	color : 'red',
 	//	size : 100,
 	//	font : 'serif'});
@@ -135,7 +135,7 @@ function textDraw()
 
 	brush.drawText({
 		x : 110, y : 30,
-		text : 'score: '+score,
+		text : 'points: '+points,
 		color : 'white',
 		size : 30,
 		font : 'serif'
@@ -233,9 +233,9 @@ if (mouse.isPress('RIGHT'))
 	{    
 		//console.log("mouse right click");
 		
-		if (score>=20) 
+		if (points>=20) 
 			{
-			score = score - 20;
+			countingPoints(-20);
 			scpos = spacecar.getPosition();
 			scposx=scpos.x; 
 			scposy=scpos.y;
@@ -392,7 +392,7 @@ if ((kboss)&&(packet))
 									kboss[i].life--;
 								} else
 								{										
-									score=score+50;
+									countingPoints(50);
 									craftCreateDrop(kboss[i].getPosition(),1);
 									kboss.splice(i,1);
 									//bosscreatebool = false;
@@ -417,6 +417,59 @@ if ((kboss)&&(packet))
 	}
 }
 
+//begin packet
+//------------------------------------------------------------
+//координата x,координата y, угол поворота angle стреляющего
+function packetCreate(posx,posy,angle)
+{
+
+}
+
+function packetDraw()
+{
+	if (objLenght(packet)>0) 
+	{	
+		for (var i = 0; i < objLenght(packet); i++) 
+		{
+
+		var fact = packet[i].getDistanceC(spacecar.getPosition());
+    	if (fact <= visdist) 
+    		{
+	       	packet[i].draw();        
+	       	}
+			//проверка каждого элемента массива kbox на столкновение с элементами массива packet
+			for (var j = 0; j < objLenght(kbox); j++) 
+			{
+				if ((packet[i])&&(packet[i].isDynamicIntersect(kbox[j].getDynamicBox()))) 
+				{
+					//попали отнимаем жизнь!!!
+					kbox[j].life--;			
+					//координата столкновения packet и kbox[j]
+					//создаем обьект анимации взрыыва
+					if (fact <= visdist) {boomDraw(packet[i].getPosition().x,packet[i].getPosition().y,animGalaxyGa.boom);}
+					//удаляем снаряд
+					packet.splice(i,1);			
+			    }
+			}
+	    	if (packet[i]) 
+			{
+				//если packet уходит за пределы избаляемся от него иначе пусть летит
+				wh = game.getWH();	
+				if ((packet[i].getPosition().y<=-10)||(packet[i].getPosition().x<=-10)||(packet[i].getPosition().y>=wh.h+10)||(packet[i].getPosition().x>=wh.w+10))
+				{
+					packet.splice(i,1);
+				} else 
+				{   					
+					packet[i].moveAngle(speed*1)
+				}		
+			}
+		}
+	}
+}
+//-------------------------------------------------------------
+//end packet
+
+
 //begin evilRocket
 //------------------------------------------------------------
 //координата x,координата y, угол поворота angle стреляющего
@@ -434,8 +487,6 @@ function evilRocketDraw()
 		wh = game.getWH();	
 		for (var i = 0; i < objLenght(evilRocket); i++) 
 		{
-		//evilRocket[i].moveAngle(speed*1)	
-
 		var fact = evilRocket[i].getDistanceC(spacecar.getPosition());
     	if (fact <= visdist) 
     	{		
@@ -452,7 +503,6 @@ function evilRocketDraw()
 				if (evilRocket[i].isDynamicIntersect(spacecar.getDynamicBox())) 
 				{
 					//обработать попадание в игрока там взрыв уничтожение снаряда получение урона игроком проверка на смерть					
-					//evilRocket[i].angle = spacecar.angle;
 					boomDraw(spacecar.getPosition().x,spacecar.getPosition().y,animGalaxyGa.boom);
 					if (spacecar.life>1) {spacecar.life--;} else {checkDestruction();}																					
 					evilRocket.splice(i,1);
@@ -463,3 +513,8 @@ function evilRocketDraw()
 }
 //-------------------------------------------------------------
 //end evilRocket
+
+function countingPoints(x)
+{
+points=points+x;
+}

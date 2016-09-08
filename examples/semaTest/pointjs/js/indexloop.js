@@ -13,9 +13,8 @@ var speed = 7,
 	kboxcreatebool=true,
 	//признак создания босса
 	bosscreatebool=true,
-	kboxtimemax = 70,
-	timerkill = 0,
-	score=0,
+	//очки игрока
+	points=0,
 	//скорость босса
 	speedboss = 0.5,
 	//скорость противника
@@ -168,59 +167,15 @@ game.newLoop('game', function () {
 
 	//обрабатываем нажатие клавиш
 	keyIsDown();
-
+	//--------------------------------------------------------------------
 	//проверяем попала ли ракета в босса
 	packetInBoss();
-
-	// если packet есть то проверяем их на столкновение
-	if (objLenght(packet)>0) 
-	{	
-		for (var i = 0; i < objLenght(packet); i++) 
-		{
-
-			var fact = packet[i].getDistanceC(spacecar.getPosition());
-    		if (fact <= visdist) 
-    			{
-	        	packet[i].draw();        
-	        	}
-
-			//проверка каждого элемента массива kbox на столкновение с элементами массива packet
-			for (var j = 0; j < objLenght(kbox); j++) 
-			{
-				if ((packet[i])&&(packet[i].isDynamicIntersect(kbox[j].getDynamicBox()))) 
-				{
-	                //console.log("TADAAAAADAAAAH!!!!");
-					//попали отнимаем жизнь!!!
-					kbox[j].life--;			
-					//координата столкновения packet и kbox[j]
-					//создаем обьект анимации взрыыва
-					if (fact <= visdist) 
-    					{
-						boomDraw(packet[i].getPosition().x,packet[i].getPosition().y,animGalaxyGa.boom);
-						}
-					//удаляем снаряд
-					packet.splice(i,1);			
-			    }
-			}
-
-	    	if (packet[i]) 
-			{
-				//если packet уходит за пределы избаляемся от него иначе пусть летит
-				wh = game.getWH();	
-				if ((packet[i].getPosition().y<=-10)||(packet[i].getPosition().x<=-10)||(packet[i].getPosition().y>=wh.h+10)||(packet[i].getPosition().x>=wh.w+10))
-				{
-					packet.splice(i,1);
-				} else 
-				{   					
-					packet[i].moveAngle(speed*1)
-				}		
-			}
-		}
-	}
-
+	//--------------------------------------------------------------------	
+	//отрисовываем рокеты игрока packet, проверяем на столкновения, удаляем, анимируем взрыв
+	packetDraw();
+	//--------------------------------------------------------------------
 	//если существуют обьекты анимации взрыва то проверяем не закончился ли он, если закончился то удаляем его
 	if (objLenght(boomPoint)>0) {endAnimation(boomPoint);};
-
 	//--------------------------------------------------------------------
 	//какието действия с боссом
 	bossActDraw();
@@ -250,10 +205,9 @@ game.newLoop('game', function () {
 		{
 			//-----------------------------------
 			//добавляем в счете и в зависимости от счета выставляем скорость противника
-			score = score + 10;
-			console.log(score);
+			countingPoints(10);
 
-			switch(score)
+			switch(points)
 			{
 				case 200: 	{speedkbox=2;  break;}
 				case 400: 	{
@@ -266,7 +220,7 @@ game.newLoop('game', function () {
 									}  
 								break;
 							}				
-				case 600: 	{speedkbox=4;  break;}
+				case 600: 	{speedkbox=3;  break;}
 				case 800: 	{  
 								if (bosscreatebool==true) 
 									{
@@ -276,7 +230,7 @@ game.newLoop('game', function () {
 									}  
 							break;
 							}
-				case 900: 	{speedkbox=5;  break;}
+				case 900: 	{speedkbox=4;  break;}
 				case 1000: 	{/*WIN*/checkWin();break;}
 			}
 
@@ -335,7 +289,7 @@ game.newLoop('game', function () {
 			setTimeout(function()
 			{
 				createkbox();
-				kboxtime=kboxtime-10;
+				kboxtime=kboxtime-5;
 			}, kboxtime);
 		}
 
