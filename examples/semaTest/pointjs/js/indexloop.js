@@ -1,4 +1,10 @@
-var kbox=[], kboss=[], packet=[], boomPoint=[];
+var kbox=[], 		//противники
+	kboss=[], 		//боссы
+	packet=[], 		//снаряды игрока
+	evilRocket=[],  //снаряды противника
+	boomPoint=[],	//анимации взрывов
+	drop = [];		//обьекты анимации дропа
+
 var speed = 7, 
 	speedsc = 3,
 	//время появления врага
@@ -19,7 +25,9 @@ var speed = 7,
 var visdist = 350;
 
 //жизнь игрока
-var spacecarlife = 3,
+var 
+	spacecarlifemax = 5,
+	spacecarlife = 3,
 	lifekbox=3;
 
 //-------------------------------------------
@@ -96,6 +104,14 @@ mouse.setCursorImage("imgs/shoot.png");
 		enemy1:tile6.getAnimation(0, 0, 96, 82, 1),
 	}
 	
+
+	//craft
+	var craft1 = pjs.tiles.newImage('imgs/krest_anim.png');
+	var addcraft1 = {
+		addlife:craft1.getAnimation(0, 0, 128, 128, 4),
+	}
+
+
 	
 
 //игрок
@@ -121,6 +137,14 @@ var gameOver = game.newAnimationObject({
 });
 
 
+//обект анимации craft 
+//var aminObjectCraft = game.newAnimationObject({
+	//animation:addcraft1.addlife,
+	//w:50,h:50,
+	//x:0,y:0
+//});
+
+
 
 //-------------------------------------------
 //LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP
@@ -132,8 +156,10 @@ game.newLoop('game', function () {
 	//отрисовываем звезды
 	skyDrawMove();
 	//отрисовываем текст
-	textDraw();
-	                 
+	textDraw();	  
+	//отрисовываем drop
+	craftDrawDrop();
+
 	//отлицаигрока
 	//pjs.camera.moveTimeC(spacecar.getPosition(1), 20);
 	
@@ -142,6 +168,9 @@ game.newLoop('game', function () {
 
 	//обрабатываем нажатие клавиш
 	keyIsDown();
+
+	//проверяем попала ли ракета в босса
+	packetInBoss();
 
 	// если packet есть то проверяем их на столкновение
 	if (objLenght(packet)>0) 
@@ -193,15 +222,11 @@ game.newLoop('game', function () {
 	if (objLenght(boomPoint)>0) {endAnimation(boomPoint);};
 
 	//--------------------------------------------------------------------
-	//если босс существует
-	if (kboss)
-		{
-			//назначаем действия над боссом
-			for (var i = 0; i < objLenght(kboss); i++) {kboss[i].draw();}			
-			bossAct();
-			//отрисовываем боссы
-		}
+	//какието действия с боссом
+	bossActDraw();
 	//--------------------------------------------------------------------
+	//рокеты противника (отрисовка)
+	evilRocketDraw();
 
 	//отрисовка обьектов
 	for (var i = 0; i < objLenght(kbox); i++) 
@@ -227,25 +252,38 @@ game.newLoop('game', function () {
 			//добавляем в счете и в зависимости от счета выставляем скорость противника
 			score = score + 10;
 			console.log(score);
+
 			switch(score)
 			{
-				case 200: {speedkbox=2;  break;}
-				case 400: {speedkbox=3;  break;}
-				case 500: 	{
+				case 200: 	{speedkbox=2;  break;}
+				case 400: 	{
 								//если босс не существует то создаем его
-								if (bosscreatebool=true) 
+								if (bosscreatebool==true) 
 									{
-										createboss();
+										bosscreatebool = false;
+										createboss(1);
 										console.log("BOOOOOOOS!!!!!!")
 									}  
 								break;
 							}				
-				case 600: {speedkbox=4;  break;}
-				case 800: {speedkbox=5;  break;}
-				case 900: {speedkbox=6;  break;}
-				case 1000: {/*WIN*/checkWin();break;}
+				case 600: 	{speedkbox=4;  break;}
+				case 800: 	{  
+								if (bosscreatebool==true) 
+									{
+										bosscreatebool = false;
+										createboss(2);
+										console.log("BOOOOOOOS!!!!!!")
+									}  
+							break;
+							}
+				case 900: 	{speedkbox=5;  break;}
+				case 1000: 	{/*WIN*/checkWin();break;}
 			}
-			//удаляем убитого
+
+			//при убийстве противника есть вероятность выпадения drop'а
+			craftCreateDrop(kbox[i].getPosition(),20);
+
+			//удаляем убитого			
 			kbox.splice(i,1); 	
 		}
 	

@@ -1,3 +1,43 @@
+//*************************************************************
+//begin craft
+//-------------------------------------------------------------
+function craftDrawDrop()
+{
+	if (drop) 
+	{
+	for (var i = 0; i < objLenght(drop); i++) 
+		{
+			drop[i].draw();
+			if (drop[i].isDynamicIntersect(spacecar.getDynamicBox())) 
+				{
+					if (spacecarlifemax<=spacecar.life) {score=score+30} else {spacecar.life++;}
+					drop.splice(i,1);
+				}				
+		}
+	}
+}
+//-------------------------------------------------------------
+//-------------------------------------------------------------
+function craftCreateDrop(poskbox,x)
+{
+	numberRand = irand(1, x);
+	switch(numberRand)
+			{
+				case 1: {
+							//создаем анимационный обьект аптечка  
+							drop.push(new game.newAnimationObject({animation:addcraft1.addlife,delay:15,w:25,h:25,x:poskbox.x,y:poskbox.y}));							
+							break;
+						}
+				case 2: {
+							//бок топлива при взрывае которого создается волна убивая все вокруг ТАДААААХХХХ
+							break;
+						}						
+			}
+}
+//-------------------------------------------------------------
+//end craft
+
+
 function lifeDraw(kbox)
 {
 	//console.log(kbox);	
@@ -13,16 +53,16 @@ function lifeDraw(kbox)
 	}
 
 	brush.drawText({
-		x : kbox.x, y : kbox.y-25,
+		x : kbox.x, y : kbox.y-30,
 		text : kboxtext,
 		color : 'white',
 		size : 30,
 		font : 'serif'
 	});
-
 }
 
-//
+
+//отрисовка и движение звезд на заднем фоне, и видимость их в пределах видимости игрока
 function skyDrawMove()
 {
 var dt = game.getDT();
@@ -47,15 +87,20 @@ OOP.forArr(stars, function (el)
     	}
 	});
 }
+
 //вызывает победу и завершает игру
 function checkWin()                        
 {
 //	if (objLenght(kbox)<=0) {}	
-		gameWin.setPositionC(spacecar.getPosition());
+		//gameWin.setPositionC(spacecar.getPosition());
+		console.log("WIIIIN!!!!!");
 		spacecar.setVisible(false);
-	  	gameWin.draw(); 
+	  	//gameWin.draw(); 
 		pjs.game.stop();
+		alert("(.)(.)");
+
 }
+
 //вызывает проигрыш и завершает игру
 function checkDestruction()
 {
@@ -63,14 +108,16 @@ function checkDestruction()
 	//gameOver.setPositionC(spacecar.getPosition());
 	//spacecar.setVisible(false);
 	//gameOver.draw();		
-	brush.drawText({
-		x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
-		text : 'you score: '+score,
-		color : 'red',
-		size : 100,
-		font : 'serif'
-	});
+	//brush.drawText({
+	//	x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
+	//	text : 'you score: '+score,
+	//	color : 'red',
+	//	size : 100,
+	//	font : 'serif'});
+
 	pjs.game.stop();
+	alert("Печалька, но вы проиграли!");
+
 }
 //-------------------------------------------
 //вывод текста
@@ -78,13 +125,8 @@ function checkDestruction()
 function textDraw()
 {
 
-	pos = pjs.camera.getPosition(1);
-	posx = pos.x;
-	posy = pos.y;
-
-
 		brush.drawText({
-		x : posx-500, y : posy-250,
+		x : 10, y : 30,
 		text : 'fps: '+game.getFPS(),
 		color : 'white',
 		size : 30,
@@ -92,7 +134,7 @@ function textDraw()
 	});
 
 	brush.drawText({
-		x : posx-400, y : posy-250,
+		x : 110, y : 30,
 		text : 'score: '+score,
 		color : 'white',
 		size : 30,
@@ -100,7 +142,7 @@ function textDraw()
 	});
 
 	brush.drawText({
-		x : posx-270, y : posy-250,
+		x : 250, y : 30,
 		text : 'speed: '+speedkbox,
 		color : 'green',
 		size : 30,
@@ -210,6 +252,7 @@ if (mouse.isPress('RIGHT'))
 	}
 }
 //-------------------------------------------
+
 //-------------------------------------------
 function createkbox()
 {
@@ -264,25 +307,159 @@ function createkbox()
 			}
 }
 //-------------------------------------------
-function createboss()
+function createboss(x)
 {
+
+for (var i=0;i<x;i++) 
+	{
+
 	var boss = new game.newAnimationObject({animation:animenemy1.enemy1,delay:25,w:96,h:82});
-	boss.life = 5;
-	boss.x = -50;
-	boss.y = -50; 
+	boss.life = 10;
+	rand = irand(1, 4);
+	wh = game.getWH();
+	switch(rand)
+	{
+		case 1: {boss.x = -30;boss.y = -30;break;}
+		case 2: {boss.x = -30;boss.y = wh.w+30;break;}
+		case 3: {boss.x = wh.h+30;boss.y = wh.w+30;break;}
+		case 4: {boss.x = wh.w+30;boss.y = -30;break;}
+	} 
 	kboss.push(boss);
 	//прописать фалсе когда босс уничтожен
 	//bosscreatebool = false;
-}
-
-function bossAct()
-{		
-	for (var i = 0; i < objLenght(kboss); i++) 
-	{
-		//двигаем босса в сторону игрока
-		kboss[i].moveAngle(speedboss);	
-		//поворачиваем босса в сторону игрока
-		kboss[i].rotate(spacecar.getPosition(1));
-		//действия босса
 	}
 }
+
+//назначаем действия над боссом
+function bossActDraw()
+{		
+if (kboss)
+	{
+		for (var i = 0; i < objLenght(kboss); i++) 
+		{
+			var fact = kboss[i].getDistanceC(spacecar.getPosition());
+    		if (fact <= visdist) 
+    			{	
+				kboss[i].draw();
+				lifeDraw(kboss[i]);
+				}	
+			//двигаем босса в сторону игрока
+			kboss[i].moveAngle(speedboss);	
+			//поворачиваем босса в сторону игрока
+			kboss[i].rotate(spacecar.getPosition(1));
+			//если столкнулись с игроком
+			if (kboss[i].isDynamicIntersect(spacecar.getDynamicBox()))
+				{
+					
+				} 
+			//научить стрелять evilRocketами
+			//стрельба
+			shot = irand(1, 30);
+			switch(shot)
+			{
+				case 1: {
+							poskboss=kboss[i].getPosition(1);
+							evilRocketCreate(poskboss.x,poskboss.y,kboss[i].getAngle());
+							break;
+						}
+				case 2: {break;}
+			}		
+			//конец стрельбы
+
+			//действия босса
+		}
+	}
+}
+
+function packetInBoss()
+{
+if ((kboss)&&(packet))
+	{
+	for (var i = 0; i < objLenght(kboss); i++) 
+		{
+		for (var j = 0; j < objLenght(packet); j++) 
+			{
+			if ((kboss[i])&&(packet[j])&&(kboss[i].isDynamicIntersect(packet[j].getDynamicBox())))
+				{
+				//избавиться от снаряда, отнять жизнь, нарисовать взрыв
+				//10% шанса что снаряд пробьет защиту босса :)
+				shotin = irand(1, 10);
+					if (shotin==1)
+						{
+							//отнимаем жизнь
+							if (kboss[i].life>1) 
+								{
+									kboss[i].life--;
+								} else
+								{										
+									score=score+50;
+									craftCreateDrop(kboss[i].getPosition(),1);
+									kboss.splice(i,1);
+									//bosscreatebool = false;
+								}
+							//рисуем взрыв
+							boomDraw(packet[j].getPosition().x,packet[j].getPosition().y,animGalaxyGa.boom);
+							//удаляем ракету
+							packet.splice(j,1);	
+								
+						} else 
+					if (shotin>=2) 
+						{
+							//console.log("");
+							//packet[j].angle = kboss[i].angle;
+							//packet[j].moveAngle(speed*1);
+							//нарисовать вокруг карабля энергетический всплеск!	
+							packet.splice(j,1);						
+						}	
+				}
+			}
+		}
+	}
+}
+
+//begin evilRocket
+//------------------------------------------------------------
+//координата x,координата y, угол поворота angle стреляющего
+function evilRocketCreate(posx,posy,angle)
+{
+		newevilRocket = new game.newAnimationObject({animation:animpacket.packet,delay:3,w:25,h:25,x:posx,y:posy});
+		newevilRocket.angle = angle;
+		evilRocket.push(newevilRocket);
+}
+
+function evilRocketDraw()
+{
+	if (evilRocket) 
+	{
+		wh = game.getWH();	
+		for (var i = 0; i < objLenght(evilRocket); i++) 
+		{
+		//evilRocket[i].moveAngle(speed*1)	
+
+		var fact = evilRocket[i].getDistanceC(spacecar.getPosition());
+    	if (fact <= visdist) 
+    	{		
+			evilRocket[i].draw();
+		}
+		//проверяем на вылет evilRocket за границу если да то удаляем обьект иначе летит дальше
+		if ((evilRocket[i].getPosition().y<=-10)||(evilRocket[i].getPosition().x<=-10)||(evilRocket[i].getPosition().y>=wh.h+10)||(evilRocket[i].getPosition().x>=wh.w+10))
+			{
+				evilRocket.splice(i,1);
+			} else 
+			{   					
+				evilRocket[i].moveAngle(speed*1);
+				//проверяем на столкновение с игроком 
+				if (evilRocket[i].isDynamicIntersect(spacecar.getDynamicBox())) 
+				{
+					//обработать попадание в игрока там взрыв уничтожение снаряда получение урона игроком проверка на смерть					
+					//evilRocket[i].angle = spacecar.angle;
+					boomDraw(spacecar.getPosition().x,spacecar.getPosition().y,animGalaxyGa.boom);
+					if (spacecar.life>1) {spacecar.life--;} else {checkDestruction();}																					
+					evilRocket.splice(i,1);
+				}
+			}	
+		}
+	}
+}
+//-------------------------------------------------------------
+//end evilRocket
