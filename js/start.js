@@ -3,20 +3,71 @@ function getRandomInt(min, max)
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function tankUp()
+{
+	if (tank.position.y>cellSize)
+	{	
+		tank.position.y=tank.position.y-cellSize/2;
+		//console.log(tank.position.y);
+		tank.position.movepos==false;
+	}
+}
+
+function tankDown()
+{
+	if (tank.position.y<13*cellSize)
+	{
+		tank.position.y=tank.position.y+cellSize/2;
+		//console.log(tank.position.y);
+		tank.position.movepos==false;	
+	}
+}
+
+function tankLeft()
+{
+	if (tank.position.x>cellSize)
+	{
+		tank.position.x=tank.position.x-cellSize/2;
+		//console.log(tank.position.x);
+		tank.position.movepos==false;	
+	}
+}
+
+function tankRight()
+{
+	if (tank.position.x<13*cellSize)
+	{
+		tank.position.x=tank.position.x+cellSize/2;
+		//console.log(tank.position.x);
+		tank.position.movepos==false;		
+	}
+	
+}
+
 function checkKey(e) {
     var event = window.event ? window.event : e;
     switch (event.keyCode) {
-    	case 37:
-    		break;
-    	case 38:
-    		break;
-    	case 39:
-    		break;
-    	case 40:
-    		break;
+    	case 37:{
+    				tankLeft();
+    				break;
+    			}
+    	//up
+    	case 38:{
+    				tankUp();
+    				break;
+    	}
+    	case 39:{
+    				tankRight();
+	    			break;
+		    	}
+		//down
+    	case 40:{
+    				tankDown();
+	    			break;
+    			}
     }
     Tank.reDraw(context, 100, 100);
-    console.log(event.keyCode)
+    //console.log(event.keyCode)
 }
 
 function update(tank) {
@@ -28,12 +79,14 @@ function update(tank) {
 }
 
 function play(canv) {
-	alert("play");
+	//alert("play");
     // draw(); // отрисовываем всё на холсте
     // console.log('12');
+
 	DrawMap(canv);
-	tank = new DrawTank(160, 13 * cellSize);
-    update(tank); // обновляем координаты
+	//tank.setImageByPath("images/enemy.png");
+	tank.draw()
+    //update(tank); // обновляем координаты
 }
 
 function init(){
@@ -53,16 +106,18 @@ function init(){
 	// 	}
 	// }
 	// танк
-	// tank = Tank;
+
+
 	// index = getRandomInt(1, 6);
 	// tank.init();	
 	// tank.setImageByIndex(1);
 	// tank.position = {x:50,y:50};
 	// tank.draw(context);
-	LoadMap();
 
+	LoadMap();
 	DrawMap(canv);
-	//setInterval(function() { play(canv) }, 1000);
+
+	setInterval(function() { play(canv) }, 10);
 };
 
 LoadPage = function () {
@@ -70,6 +125,13 @@ LoadPage = function () {
 		'images/TankSets.png',
 		'images/hero_normal.png',
 	]);
+
+	tank = Tank;
+	tank.position.x= 160;
+	tank.position.y= 13 * cellSize;
+	//загружаем танку спрайт
+	tank.setImageByPath("images/enemy.png");
+
 	resources.onReady(init);
 	document.onkeydown = checkKey;
 };
