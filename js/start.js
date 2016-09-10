@@ -44,6 +44,11 @@ function tankRight()
 	
 }
 
+function createRocket()
+{
+	console.log("piy piy");
+}
+
 function checkKey(e) {
     var event = window.event ? window.event : e;
     switch (event.keyCode) {
@@ -65,9 +70,14 @@ function checkKey(e) {
     				tankDown();
 	    			break;
     			}
+    	case 32:{
+    				createRocket();
+	    			break;
+    			}
+
     }
     Tank.reDraw(context, 100, 100);
-    //console.log(event.keyCode)
+    console.log(event.keyCode)
 }
 
 function update(tank) {
