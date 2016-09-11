@@ -83,6 +83,9 @@ OOP.forArr(stars, function (el)
     	} else 
     	{
     	el.visible=false;
+    	//el.setAlpha(el.getDistance(spacecar.getPosition(1))/100);
+    	//console.log(el.getDistance(spacecar.getPosition(1))/100);
+
       	//el.transparent(-0.01);
     	}
 	});
