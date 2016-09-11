@@ -17,7 +17,7 @@ mouse.initMouseControl();
 //---------------------------------------------------
 
 //скорость игрока
-var speeddoc = 3;
+var speeddoc = 5;
 
 //background
 //----------------
@@ -61,7 +61,7 @@ var dog = game.newAnimationObject({
     x : 100, y : height -210,
     h : 120, w : 150,
   	animation:animrdog.runrdog,
-  	delay : 10,
+  	delay : 4,
 });
 //----------------
 
