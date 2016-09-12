@@ -21,16 +21,8 @@ var mouse = pjs.mouseControl;
 mouse.initMouseControl();
 //---------------------------------------------------
 
-var speed = 3;
-
-/*
-var man = game.newRectObject(
-	{
-		x: 300, y: 200,
-		w: 100, h: 50,
-		fillColor: '#000000'
-	});
-*/
+var speed = 2,
+	speedcar = 5;
 
 //car animation
 var tilecar = pjs.tiles.newImage('img/car1.png');
@@ -38,10 +30,10 @@ var gta3car1 = {
 	car1:tilecar.getAnimation(0, 0, 160, 75, 1),
 }
 
-var map = [];
-oop.forInt(5, function()
+var	arrCar = [];
+oop.forInt(10, function()
 	{
-		map.push(game.newAnimationObject(
+		arrCar.push(game.newAnimationObject(
 		{
 			animation: gta3car1.car1,
 			w: 160, h: 75,
@@ -50,8 +42,6 @@ oop.forInt(5, function()
 			delay: 5,
 		}));
 	});
-
-
 
 //игрок
 //------------------------------------------------
@@ -68,7 +58,6 @@ var manrun = {
 
 var animstand = true;
 
-
 //игрок
 var man = game.newAnimationObject({  
   	animation : manstand.stand,
@@ -79,7 +68,6 @@ var man = game.newAnimationObject({
 
 man.life = 10;
 //------------------------------------------------
-
 
 function endAnimation()
 {
@@ -92,8 +80,6 @@ function endAnimation()
 			}
 	}	
 }
-
-
 
 var bum = false;
 var carobj;
@@ -109,7 +95,7 @@ function keyIsDown()
 	{
 		if (incar==true)
 		{
-			carobj.moveAngle(2*speed);
+			carobj.moveAngle(2*speedcar);
 			//carobj.setAnimation(manrun.run);
 
 		} else
@@ -123,19 +109,20 @@ function keyIsDown()
 	{
 		if (incar==true)
 		{
-			carobj.moveAngle(-2*speed);
+			carobj.moveAngle(-2*speedcar/2);
 			//carobj.setAnimation(manrun.run);
 		} else
 		{
 			man.moveAngle(-2*speed);
 			man.setAnimation(manrun.run);
+
 		}
 	}
 	if ((key.isDown('LEFT'))||(key.isDown('A'))) 
 	{
 		if (incar==true)
 		{
-			carobj.turn(-1*speed);			
+			carobj.turn(-1*speedcar);			
 		} else
 		{
 			man.turn(-1*speed);
@@ -145,7 +132,7 @@ function keyIsDown()
 	{
 		if (incar==true)
 		{
-			carobj.turn(1*speed);			
+			carobj.turn(1*speedcar);			
 		} else
 		{
 			man.turn(1*speed);
@@ -158,42 +145,32 @@ function keyIsDown()
 	}
 	if (mouse.isPress('RIGHT'))  
 	{    
-		console.log("залазим в "+carobj);
-		sys.log(carobj);
-
 
 	if (carobj)
 		{
 		if (incar==true)
 			{
 				sys.log("exit car");
-				man.setVisible("true");
+				//man.setVisible("true");
+				pos = carobj.getPosition();
+				man.x = pos.x; man.y=pos.y;
+				man.visible = "true";
+				sys.log(man);
 				incar=false;		
 			} else
 			{
 				incar = true;
+				man.x=-100;man.y=-100;
 				man.setVisible("false");
-				sys.log("in car")
+				//man.visible = "false";				
+				sys.log("in car");
 			}
 		}
 
-
-	}
-	//------------------------------------------
-
-	//is key Up
-	//------------------------------------------
-	if ((key.isUp('UP'))||(key.isDown('W'))) 
-	{
-	}
-	if ((key.isUp('DOWN'))||(key.isDown('S'))) 
-	{
 	}
 	//------------------------------------------
 
 }
-
-var maxLen = 100;
 
 game.newLoop('game', function () 
 {
@@ -205,48 +182,40 @@ endAnimation();
 //if (man.frame==man.anim.r){man.setAnimation(manstand.stand);}
 
 
-var len = maxLen;
-var pos = man.getPositionC();
-//var pos2 = pjs.vector.getPointAngle(point(pos.x+len, pos.y),pos,man.getAngle());
-
-camera.moveTimeC(pos,10);
-
-for (var i = 0; i < objLenght(map); i++) 
-	{
-	var dist = pjs.vector.getDistance(map[i].getPosition(), man.getPosition());
-	if (dist<100) {carobj = map[i];} else {carobj=0;} 
+if (incar==false) 
+	{ 
+		var pos = man.getPositionC();
+		camera.moveTimeC(pos,10);
 	}
-/*
-if (map) 
-{
-for (var i = 0; i < objLenght(map); i++) 
-	{
-	if (map[i].isDynamicIntersect(man.getDynamicBox())) 
+if (incar==true) 
+	{ 
+		if (carobj)
 		{
-			//map[i].moveAngle(speed, man.getAngle());
-			map[i].x = pos2.x;
-			map[i].y = pos2.y;
-
+			var pos = carobj.getPositionC();
+			camera.moveTimeC(pos,10);
 		}
 	}
-}
-*/
 
-/*brush.drawLineA(
-{
-	x1: pos.x, y1: pos.y,
-	x2: pos2.x,y2: pos2.y,
-	strokeColor: '#FF0000',
-});
-*/
-	
+//var pos2 = pjs.vector.getPointAngle(point(pos.x+len, pos.y),pos,man.getAngle());
 
-	oop.drawArr(map);
+
+if (incar==false)
+{	
+	for (var i = 0; i < objLenght(arrCar); i++) 
+		{	
+			if (arrCar[i].isDynamicIntersect(man.getDynamicBox())) 
+			{
+				carobj=arrCar[i];
+				//sys.log(arrCar[i]);
+			} 
+			//var dist = pjs.vector.getDistance(arrCar[i].getPosition(), man.getPosition());
+			//if (dist<100) {carobj =	arrCar[i];} else {carobj=0;} 
+		}
+} else {}
+
+	oop.drawArr(arrCar);
+
     man.draw();
-
-
-
-
 
 });
 
