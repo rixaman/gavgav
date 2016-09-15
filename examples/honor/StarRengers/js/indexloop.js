@@ -29,6 +29,12 @@ var
 	spacecarlife = 3,
 	lifekbox=3;
 
+//game loop
+//-------------------------------------------
+var gamePause=true,
+	gameEnd=true;
+//-------------------------------------------
+
 //-------------------------------------------
 var pjs = new PointJS('2d', 400, 400);
 pjs.system.initFullPage();
@@ -40,6 +46,12 @@ var brush = pjs.brush;
 var OOP = pjs.OOP;
 var math = pjs.math;
 var camera = pjs.camera;
+
+//---------------------------------------------------
+//максимальная и минимальная величина экрана
+var wh = game.getWH();
+var getmaxx = wh.w;
+var getmaxy = wh.h;	
 
 //---------------------------------------------------
 //инициализация контроля клавиатуры и мыши
@@ -69,7 +81,7 @@ OOP.forInt(1000, function () {
 
 //---------------------------------------------------
 //Замена стандартного курсора каким-либо изображением
-mouse.setCursorImage("imgs/shoot.png");
+
 //img - string, путь к картинке
 //---------------------------------------------------
 
@@ -105,55 +117,95 @@ mouse.setCursorImage("imgs/shoot.png");
 	
 
 	//craft
+	//------------------------------------------
 	var craft1 = pjs.tiles.newImage('imgs/krest_anim.png');
 	var addcraft1 = {
 		addlife:craft1.getAnimation(0, 0, 128, 128, 4),
 	}
+	var craft2 = pjs.tiles.newImage('imgs/mine_anim.png');
+	var addcraft2 = {
+		addmine:craft2.getAnimation(0, 0, 128, 128, 4),
+	}
 
+	//------------------------------------------
 
 	
 
 //игрок
+//----------------------------------------------
 var spacecar = game.newAnimationObject({  
   	animation : spaceShip.ship,
 	w : 50, h : 50,
   	x : 600, y : 500  
 });
 spacecar.life = spacecarlife;
+//----------------------------------------------
 
-//обект анимации победы 
-var gameWin = game.newAnimationObject({
-	//animation : anim.dethdragon,
-	w:600, h:500,
-	x:0, y:0
+
+
+//--------GAME---MENU----------------------------
+//-----------------------------------------------
+
+		//---------animation-game-menu---------------
+		//-------------------------------------------
+			var tileNewGame = pjs.tiles.newImage('imgs/newgame.png');
+			var tileStatistics = pjs.tiles.newImage('imgs/statistics.png');
+
+			var pngNewGame = {
+				png1:tileNewGame.getAnimation(0, 0, 100, 50, 1),
+			}
+			var pngStatistics = {
+				png2:tileStatistics.getAnimation(0, 0, 100, 50, 1),
+			}
+		//-------------------------------------------
+
+var startGame = game.newAnimationObject({  
+	animation : pngNewGame.png1,
+	w : 100, h : 50,
+  	x : 0, y : 0,
+  	delay: 100  
 });
 
-//обект анимации проигрыша 
-var gameOver = game.newAnimationObject({
-	//animation:anim.gameOver,
-	w:600,h:500,
-	x:0,y:0
+var statGame = game.newAnimationObject({  
+	animation : pngStatistics.png2,
+	w:100,h:50,
+  	x:0, y:0,
+  	delay: 100 
 });
 
+startGame.x = getmaxx/2-startGame.w/2;
+startGame.y = getmaxy/2-60;	
 
-//обект анимации craft 
-//var aminObjectCraft = game.newAnimationObject({
-	//animation:addcraft1.addlife,
-	//w:50,h:50,
-	//x:0,y:0
-//});
+statGame.x = getmaxx/2-statGame.w/2;
+statGame.y = getmaxy/2;	
 
 
 
-//-------------------------------------------
-//LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP
-game.newLoop('game', function () {
+
+//LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP MENU
+//-----------------------------------------------
+game.newLoop('menu', function () {
+	game.clear();
+	game.fill('black');
+
+	//отрисовываем меню
+	menuDraw();
+	//события клавиш и мыши
+	keyIsDownMenu();
+
+	});
+//-----------------------------------------------
+
+//LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP game
+//!!!!!!!!!!!!!переписать как отдельную функцию 
+game.newLoop('game', function()
+{
 	game.clear();
 
 	//заливаем жкран черным цветом
 	game.fill('black');
 	//отрисовываем звезды
-	skyDrawMove();
+	skyDrawMove(spacecar.getPosition(),visdist);
 	//отрисовываем текст
 	textDraw();	  
 	//отрисовываем drop
@@ -216,22 +268,26 @@ game.newLoop('game', function () {
 									{
 										bosscreatebool = false;
 										createboss(1);
-										console.log("BOOOOOOOS!!!!!!")
+										console.log("BOOOOOOOS!!!!!!");
 									}  
 								break;
 							}				
 				case 600: 	{speedkbox=3;  break;}
-				case 800: 	{  
+				case 800: 	{break;}
+				case 900: 	{speedkbox=4;  break;}
+				case 1000: 	{
+							//если босс не существует то создаем его
 								if (bosscreatebool==true) 
 									{
 										bosscreatebool = false;
+										//функция создания босса x - количество штук
 										createboss(2);
-										console.log("BOOOOOOOS!!!!!!")
+										console.log("2 BOOOOOOOS!!!!!!");
 									}  
-							break;
+								break;
 							}
-				case 900: 	{speedkbox=4;  break;}
-				case 1000: 	{/*WIN*/checkWin();break;}
+
+				case 1500: 	{speedkbox=5;  break;}
 			}
 
 			//при убийстве противника есть вероятность выпадения drop'а
@@ -294,4 +350,4 @@ game.newLoop('game', function () {
 		}
 
 });
-//-------------------------------------------
+

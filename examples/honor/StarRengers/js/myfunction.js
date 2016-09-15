@@ -7,12 +7,27 @@ function craftDrawDrop()
 	{
 	for (var i = 0; i < objLenght(drop); i++) 
 		{
-			drop[i].draw();
-			if (drop[i].isDynamicIntersect(spacecar.getDynamicBox())) 
-				{
-					if (spacecarlifemax<=spacecar.life) {countingPoints(30);} else {spacecar.life++;}
-					drop.splice(i,1);
-				}				
+		drop[i].draw();
+		if (drop[i].isDynamicIntersect(spacecar.getDynamicBox())) 
+			{
+			switch(drop[i].type)
+						{
+				case "life": 	
+							{
+								if (spacecarlifemax<=spacecar.life) {countingPoints(30);} else {spacecar.life++;}
+								drop.splice(i,1);	
+								break;
+							} 
+				case "mine": 	
+							{
+								pos = spacecar.getPosition();
+								boomDraw(pos.x,pos.y,animGalaxyGa.boom);
+								if (spacecar.life>1) {spacecar.life--;} else {checkDestruction();}					
+								drop.splice(i,1);	
+								break;
+							}
+						}
+			}
 		}
 	}
 }
@@ -25,13 +40,24 @@ function craftCreateDrop(poskbox,x)
 			{
 				case 1: {
 							//создаем анимационный обьект аптечка  
-							drop.push(new game.newAnimationObject({animation:addcraft1.addlife,delay:15,w:25,h:25,x:poskbox.x,y:poskbox.y}));							
+							timeDrop = new game.newAnimationObject({animation:addcraft1.addlife,delay:15,w:25,h:25,x:poskbox.x,y:poskbox.y})
+							timeDrop.type = "life";
+							console.log(timeDrop);
+							drop.push(timeDrop);
 							break;
 						}
 				case 2: {
+							//бомба при налете на нее теряется жизнь
+							timeDrop = new game.newAnimationObject({animation:addcraft2.addmine,delay:15,w:30,h:30,x:poskbox.x,y:poskbox.y})
+							timeDrop.type = "mine";
+							console.log(timeDrop);
+							drop.push(timeDrop);							
+							break;
+						}	
+				case 3: {
 							//бок топлива при взрывае которого создается волна убивая все вокруг ТАДААААХХХХ
 							break;
-						}						
+						}					
 			}
 }
 //-------------------------------------------------------------
@@ -63,7 +89,7 @@ function lifeDraw(kbox)
 
 
 //отрисовка и движение звезд на заднем фоне, и видимость их в пределах видимости игрока
-function skyDrawMove()
+function skyDrawMove(pos, dist)
 {
 var dt = game.getDT();
 var camPos = camera.getPosition();
@@ -71,8 +97,8 @@ var camPos = camera.getPosition();
 OOP.forArr(stars, function (el) 
 	{
 	el.draw();
-    var fact = el.getDistanceC(spacecar.getPosition());
-    if (fact <= visdist) 
+    var fact = el.getDistanceC(pos);
+    if (fact <= dist) 
     	{
       	el.visible=true;//el.transparent(0.01);
       	el.move(point(el.dx*dt, el.dy*dt));
@@ -94,33 +120,25 @@ OOP.forArr(stars, function (el)
 //вызывает победу и завершает игру
 function checkWin()                        
 {
-//	if (objLenght(kbox)<=0) {}	
-		//gameWin.setPositionC(spacecar.getPosition());
 		console.log("WIIIIN!!!!!");
 		spacecar.setVisible(false);
-	  	//gameWin.draw(); 
 		pjs.game.stop();
 		alert("(.)(.)");
-
 }
 
 //вызывает проигрыш и завершает игру
 function checkDestruction()
 {
 	console.log("GAME OWER!!!!!");
-	//gameOver.setPositionC(spacecar.getPosition());
-	//spacecar.setVisible(false);
-	//gameOver.draw();		
-	//brush.drawText({
-	//	x : spacecar.getPosition(1).x, y : spacecar.getPosition(1).y,
-	//	text : 'you points: '+points,
-	//	color : 'red',
-	//	size : 100,
-	//	font : 'serif'});
+
+	console.log('game is stop!');
+	mouse.setCursorImage(null);
+	game.startLoop('menu');
+	gameEnd=true;
 
 	pjs.game.stop();
-	alert("Печалька, но вы проиграли!");
 
+	alert("Печалька, но вы проиграли!");
 }
 //-------------------------------------------
 //вывод текста
@@ -151,6 +169,16 @@ function textDraw()
 		size : 30,
 		font : 'serif'
 	});
+
+	brush.drawText({
+		x : getmaxx-200, y : 20,
+		text : 'press ESC to pause',
+		color : 'red',
+		size : 20,
+		font : 'serif'
+	});
+
+
 }
 //-------------------------------------------
 //проиграть анимацию взрыва ракеты
@@ -254,7 +282,17 @@ if (mouse.isPress('RIGHT'))
 		} 
 	}
 
-
+	if (key.isDown('ESC'))
+		{	
+			if (gamePause==false) 
+			{
+				console.log('game is stop!');
+				mouse.setCursorImage(null);
+				game.startLoop('menu');
+				gamePause=true;
+				//game.resume();
+			}	
+		}
 
 }
 //-------------------------------------------
@@ -398,10 +436,10 @@ if ((kboss)&&(packet))
 									kboss[i].life--;
 								} else
 								{										
-									countingPoints(50);
+									countingPoints(100);
 									craftCreateDrop(kboss[i].getPosition(),1);
 									kboss.splice(i,1);
-									//bosscreatebool = false;
+									bosscreatebool = false;
 								}
 							//рисуем взрыв
 							boomDraw(packet[j].getPosition().x,packet[j].getPosition().y,animGalaxyGa.boom);
