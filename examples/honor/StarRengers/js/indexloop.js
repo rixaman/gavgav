@@ -5,14 +5,15 @@ var kbox=[], 		//противники
 	boomPoint=[],	//анимации взрывов
 	drop = [];		//обьекты анимации дропа
 
+var bossPart1 = false,
+	bossPart2 = false;
+
 var speed = 7, 
 	speedsc = 3,
 	//время появления врага
 	kboxtime = 2000,
 	//признак создания противника
 	kboxcreatebool=true,
-	//признак создания босса
-	bosscreatebool=true,
 	//очки игрока
 	points=0,
 	//скорость босса
@@ -259,34 +260,27 @@ game.newLoop('game', function()
 			//добавляем в счете и в зависимости от счета выставляем скорость противника
 			countingPoints(10);
 
+			if ((points>400)&&(bossPart1==false)) 
+				{
+					createboss(1);
+					bossPart1=true;
+				}
+
+			if ((points>1000)&&(bossPart2==false)) 
+				{
+					createboss(2);
+					bossPart2=true;
+				}
+
+
 			switch(points)
 			{
 				case 200: 	{speedkbox=2;  break;}
-				case 400: 	{
-								//если босс не существует то создаем его
-								if (bosscreatebool==true) 
-									{
-										bosscreatebool = false;
-										createboss(1);
-										console.log("BOOOOOOOS!!!!!!");
-									}  
-								break;
-							}				
+				case 400: 	{break;}				
 				case 600: 	{speedkbox=3;  break;}
 				case 800: 	{break;}
 				case 900: 	{speedkbox=4;  break;}
-				case 1000: 	{
-							//если босс не существует то создаем его
-								if (bosscreatebool==true) 
-									{
-										bosscreatebool = false;
-										//функция создания босса x - количество штук
-										createboss(2);
-										console.log("2 BOOOOOOOS!!!!!!");
-									}  
-								break;
-							}
-
+				case 1000: 	{break;}
 				case 1500: 	{speedkbox=5;  break;}
 			}
 

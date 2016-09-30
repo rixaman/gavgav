@@ -55,6 +55,16 @@ function craftCreateDrop(poskbox,x)
 							break;
 						}	
 				case 3: {
+							//console.log(poskbox.x);
+							var timeangle=0;
+							timex = poskbox.x;
+							timey = poskbox.y;
+							for (var i = 0; i < 8; i++) 
+							{
+								timeangle = timeangle + 45;
+								evilRocketCreate(timex,timey,timeangle);	
+							}
+							
 							//бок топлива при взрывае которого создается волна убивая все вокруг ТАДААААХХХХ
 							break;
 						}					
@@ -521,6 +531,7 @@ function evilRocketCreate(posx,posy,angle)
 {
 		newevilRocket = new game.newAnimationObject({animation:animpacket.packet,delay:3,w:25,h:25,x:posx,y:posy});
 		newevilRocket.angle = angle;
+		console.log(newevilRocket);
 		evilRocket.push(newevilRocket);
 }
 
